@@ -1,1 +1,1 @@
-# ci-service
+# GPII Continuous Integration Service
