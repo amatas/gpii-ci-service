@@ -1,0 +1,21 @@
+- job:
+    name: gpii-linux-framework
+    project-type: freestyle
+    node: tor1-prd-ci03
+    concurrent: false
+    scm:
+      - git:
+          url: https://github.com/avtar/linux.git
+          branches:
+            - GPII-1258
+    builders:
+      - shell: |
+          #!/bin/sh -ex
+          DISPLAY=:0 vagrant up --provider virtualbox
+          grunt unit-tests
+          vagrant destroy --force
+    logrotate:
+      daysToKeep: 30
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
