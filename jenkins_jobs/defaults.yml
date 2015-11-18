@@ -1,0 +1,19 @@
+- defaults:
+    name: global
+    project-type: freestyle
+    concurrent: false
+    email: ci@lists.gpii.net
+    publishers:
+      - email:
+          recipients: '{email}'    
+    # If repository issues are encountered retry the specified number of times 
+    retry-count: 5
+    logrotate:
+      daysToKeep: 30
+    wrappers:
+      - timeout:
+          # Abort after these many minutes
+          timeout: 40
+          # Mark the build as failed
+          fail: true
+
