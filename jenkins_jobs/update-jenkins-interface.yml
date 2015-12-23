@@ -1,5 +1,6 @@
 - job:
     name: update-jenkins-interface
+    description: 'Triggers updates of the Internet-facing static Jenkins site'
     node: master
     project-type: freestyle
     concurrent: false
