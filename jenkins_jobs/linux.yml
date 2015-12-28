@@ -2,7 +2,7 @@
     name: linux-tests
     description: 'Main Jenkins job responsible for orchestrating tasks required to run GPII Linux Framework tests'
     project-type: multijob
-    node: tor1-prd-ci03
+    node: h-0007.tor1.inclusivedesign.ca
     scm:
       # Before making changes to the Git repository URL and/or branch(es) please
       # make sure that a Vagrantfile and other content required to provision test
@@ -48,7 +48,7 @@
 - job:
     name: create-linux-vm
     description: 'Job responsible for creating a test VM'
-    node: tor1-prd-ci03
+    node: h-0007.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
       - shell: DISPLAY=:0 vagrant up --provider virtualbox
@@ -56,7 +56,7 @@
 - job:
     name: linux-unit-tests
     description: 'GPII Linux unit tests'
-    node: tor1-prd-ci03
+    node: h-0007.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
       - shell: grunt unit-tests
@@ -64,7 +64,7 @@
 - job:
     name: linux-acceptance-tests
     description: 'GPII Linux acceptance tests'
-    node: tor1-prd-ci03
+    node: h-0007.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
       - shell: grunt acceptance-tests
@@ -72,7 +72,7 @@
 - job:
     name: delete-linux-vm
     description: 'Job responsible for deleting the test VM'
-    node: tor1-prd-ci03
+    node: h-0007.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
       - shell: vagrant destroy -f
