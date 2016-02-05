@@ -11,5 +11,6 @@ The remaining definitions in the ``jenkins_jobs`` directory are what the GPII bu
 * ``defaults.yml`` - default values used by multiple jobs
 * ``linux.yml`` - job definition for the [GPII Linux Personalization Framework](https://github.com/gpii/linux)
 * ``universal.yml`` - job defintion for the [GPII Universal](https://github.com/gpii/universal/) project
+* ``windows.yml`` - job defintion for the [GPII Windows Framework](https://github.com/gpii/windows/) project
 
 Commits in the GPII project repositories listed above will trigger builds in the CI environment using GitHub webhooks.
