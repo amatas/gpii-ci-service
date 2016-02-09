@@ -1,0 +1,68 @@
+- job:
+    name: nexus-tests
+    description: 'Main Jenkins job responsible for orchestrating tasks required to run GPII Nexus tests'
+    project-type: multijob
+    node: h-0007.tor1.inclusivedesign.ca
+    scm:
+      # Before making changes to the Git repository URL and/or branch(es) please
+      # make sure that a Vagrantfile and other content required to provision test
+      # VMs is available.
+      #
+      # TODO: Please note that a build failure in one branch will stop the entire
+      # job even if other branches need to be built.
+      - git:
+          url: https://github.com/simonbates/nexus.git
+          branches:
+            - master
+            - p4a-feb-2016
+    triggers:
+      - github
+    builders:
+      # Each parent multijob builder passes the Jenkins WORKSPACE environment
+      # variable to its child job as a parameter so that a common Git working
+      # directory can be used.
+      - multijob:
+          name: create-nexus-vm
+          condition: COMPLETED
+          projects:
+            - name: create-nexus-vm
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: nexus-unit-tests
+          condition: COMPLETED
+          projects:
+            - name: nexus-unit-tests
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: delete-nexus-vm
+          condition: COMPLETED
+          projects:
+            - name: delete-nexus-vm
+              predefined-parameters: parent_workspace=$WORKSPACE
+
+- job:
+    name: create-nexus-vm
+    description: 'Job responsible for creating a test VM'
+    node: h-0007.tor1.inclusivedesign.ca
+    workspace: $parent_workspace
+    builders:
+      # Setting BUILD_ID for the vagrant process to make sure the Jenkins process tree killer
+      # doesn't kill the VM before the next job is started.
+      - shell: BUILD_ID=nexus vagrant up --provider virtualbox
+
+- job:
+    name: nexus-unit-tests
+    description: 'GPII Nexus unit tests'
+    node: h-0007.tor1.inclusivedesign.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: vagrant ssh -c 'sudo systemctl stop nexus.service'
+      - shell: vagrant ssh -c 'node /home/vagrant/sync/tests/all-tests.js'
+
+- job:
+    name: delete-nexus-vm
+    description: 'Job responsible for deleting the test VM'
+    node: h-0007.tor1.inclusivedesign.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: vagrant destroy -f
