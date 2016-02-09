@@ -2,10 +2,9 @@
     name: global
     project-type: freestyle
     concurrent: false
-    email: ci@lists.gpii.net
     publishers:
       - email:
-          recipients: '{email}'    
+          recipients: ci@lists.gpii.net
     # If repository issues are encountered retry the specified number of times 
     retry-count: 5
     logrotate:
