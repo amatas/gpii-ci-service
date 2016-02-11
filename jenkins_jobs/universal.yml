@@ -57,7 +57,7 @@
     node: h-0007.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: DISPLAY=:0 vagrant up --provider virtualbox
+      - shell: BUILD_ID=universal DISPLAY=:0 vagrant up --provider virtualbox
 
 - job:
     name: universal-browser-tests
