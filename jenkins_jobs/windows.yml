@@ -22,7 +22,7 @@
       # directory can be used.
       - multijob:
           name: create-windows-vm
-          condition: COMPLETED
+          condition: SUCCESSFUL
           projects:
             - name: create-windows-vm
               predefined-parameters: parent_workspace=$WORKSPACE
@@ -43,7 +43,7 @@
             - name: windows-unit-tests
       - multijob:
           name: delete-windows-vm
-          condition: COMPLETED
+          condition: SUCCESSFUL
           projects:
             - name: delete-windows-vm
               predefined-parameters: parent_workspace=$WORKSPACE
@@ -76,7 +76,10 @@
     workspace: c:\vagrant
     builders:
       - batch: npm install --ignore-scripts=true
-      - batch: grunt build
+      - batch: grunt --force build
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
 
 - job:
     name: windows-acceptance-tests
@@ -85,6 +88,9 @@
     workspace: c:\vagrant
     builders:
       - batch: node tests\AcceptanceTests.js builtIn
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
 
 - job:
     name: windows-unit-tests
@@ -93,6 +99,9 @@
     workspace: c:\vagrant
     builders:
       - batch: node tests\UnitTests.js
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
 
 - job:
     name: delete-windows-vm
