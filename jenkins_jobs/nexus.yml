@@ -23,7 +23,7 @@
       # directory can be used.
       - multijob:
           name: create-nexus-vm
-          condition: COMPLETED
+          condition: SUCCESSFUL
           projects:
             - name: create-nexus-vm
               predefined-parameters: parent_workspace=$WORKSPACE
@@ -35,7 +35,7 @@
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
           name: delete-nexus-vm
-          condition: COMPLETED
+          condition: SUCCESSFUL
           projects:
             - name: delete-nexus-vm
               predefined-parameters: parent_workspace=$WORKSPACE
@@ -58,6 +58,9 @@
     builders:
       - shell: vagrant ssh -c 'sudo systemctl stop nexus.service'
       - shell: vagrant ssh -c 'node /home/vagrant/sync/tests/all-tests.js'
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
 
 - job:
     name: delete-nexus-vm

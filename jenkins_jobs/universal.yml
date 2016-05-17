@@ -22,7 +22,7 @@
       # directory can be used.
       - multijob:
           name: create-universal-vm
-          condition: COMPLETED
+          condition: SUCCESSFUL
           projects:
             - name: create-universal-vm
               predefined-parameters: parent_workspace=$WORKSPACE
@@ -46,7 +46,7 @@
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
           name: delete-universal-vm
-          condition: COMPLETED
+          condition: SUCCESSFUL
           projects:
             - name: delete-universal-vm
               predefined-parameters: parent_workspace=$WORKSPACE
@@ -71,6 +71,9 @@
           results: report.tap
     builders:
       - shell: vagrant ssh -c 'cd /home/vagrant/sync/node_modules/universal && DISPLAY=:0 testem ci --file tests/web/testem_qi.json'
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
           
 - job:
     name: universal-node-tests
@@ -79,6 +82,9 @@
     workspace: $parent_workspace
     builders:
       - shell: vagrant ssh -c 'cd /home/vagrant/sync/node_modules/universal && npm test'
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
 
 - job:
     name: universal-node-production-tests
@@ -87,6 +93,9 @@
     workspace: $parent_workspace
     builders:
       - shell: vagrant ssh -c 'cd /home/vagrant/sync/node_modules/universal && node tests/ProductionConfigTests.js'
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
 
 - job:
     name: delete-universal-vm

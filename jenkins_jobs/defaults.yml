@@ -4,7 +4,7 @@
     concurrent: false
     publishers:
       - email:
-          recipients: ci@lists.gpii.net
+          recipients: ops-notifications@lists.inclusivedesign.ca
     # If repository issues are encountered retry the specified number of times 
     retry-count: 5
     logrotate:

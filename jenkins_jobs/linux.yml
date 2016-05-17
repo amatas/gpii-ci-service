@@ -22,7 +22,7 @@
       # directory can be used.
       - multijob:
           name: create-linux-vm
-          condition: COMPLETED
+          condition: SUCCESSFUL
           projects:
             - name: create-linux-vm
               predefined-parameters: parent_workspace=$WORKSPACE
@@ -40,7 +40,7 @@
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
           name: delete-linux-vm
-          condition: COMPLETED
+          condition: SUCCESSFUL
           projects:
             - name: delete-linux-vm
               predefined-parameters: parent_workspace=$WORKSPACE
@@ -62,7 +62,10 @@
     workspace: $parent_workspace
     builders:
       - shell: grunt unit-tests
-          
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
+
 - job:
     name: linux-acceptance-tests
     description: 'GPII Linux acceptance tests'
@@ -70,7 +73,10 @@
     workspace: $parent_workspace
     builders:
       - shell: grunt acceptance-tests
-        
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
+
 - job:
     name: delete-linux-vm
     description: 'Job responsible for deleting the test VM'
