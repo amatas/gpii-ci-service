@@ -61,7 +61,7 @@
       - shell: vagrant winrm -e -c 'cmd /c curl -ks -o c:\jenkins\slave.jar https://ci-int.gpii.net/jnlpJars/slave.jar'
       # Set a JENKINS_WIN10_NODE_SECRET variable so that the Jenkins node secret is available in
       # the Windows VM environment.
-      - shell: /home/jenkins/bin/set-jenkins-win10-node-secret.sh
+      - shell: /home/jenkins-gpii/bin/set-jenkins-win10-node-secret.sh
       # Using Java Web Start to launch the node agent will not return the shell prompt so psexec's
       # -d option is used to state that the process is interactive and waiting for it is not
       # required. Unfortunately using that option with 'vagrant winrm' seems to return a non-zero
