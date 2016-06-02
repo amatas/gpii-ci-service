@@ -12,7 +12,7 @@
     wrappers:
       - timeout:
           # Abort after these many minutes
-          timeout: 40
+          timeout: 25
           # Mark the build as failed
           fail: true
 
