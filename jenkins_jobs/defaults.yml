@@ -8,7 +8,7 @@
     # If repository issues are encountered retry the specified number of times 
     retry-count: 5
     logrotate:
-      daysToKeep: 30
+      daysToKeep: 7
     wrappers:
       - timeout:
           # Abort after these many minutes
