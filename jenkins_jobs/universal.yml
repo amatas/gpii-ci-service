@@ -66,14 +66,13 @@
     description: 'GPII Universal browser tests'
     node: h-0007.tor1.inclusivedesign.ca
     workspace: $parent_workspace
-    publishers:
-      - tap:
-          results: report.tap
     builders:
       - shell: vagrant ssh -c 'cd /home/vagrant/sync/node_modules/universal && DISPLAY=:0 testem ci --file tests/web/testem_qi.json'
     publishers:
       - email:
           recipients: ci@lists.gpii.net
+      - tap:
+          results: report.tap
           
 - job:
     name: universal-node-tests
