@@ -11,7 +11,7 @@
       # TODO: Please note that a build failure in one branch will stop the entire
       # job even if other branches need to be built.
       - git:
-          url: https://github.com/gpii/windows.git
+          url: https://github.com/GPII/windows.git
           branches:
             - master 
     triggers:
