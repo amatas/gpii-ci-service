@@ -32,15 +32,15 @@
           projects:
             - name: windows-build
       - multijob:
-          name: windows-acceptance-tests
-          condition: COMPLETED
-          projects:
-            - name: windows-acceptance-tests
-      - multijob:
           name: windows-unit-tests
           condition: COMPLETED
           projects:
             - name: windows-unit-tests
+      - multijob:
+          name: windows-acceptance-tests
+          condition: COMPLETED
+          projects:
+            - name: windows-acceptance-tests
       - multijob:
           name: delete-windows-vm
           condition: SUCCESSFUL
@@ -70,23 +70,23 @@
       - shell: vagrant winrm -e -c 'psexec \\localhost -accepteula -u vagrant -p vagrant -w "c:\jenkins" -d -i cmd /c start /min java -jar slave.jar -jnlpUrl https://ci-int.gpii.net/computer/gpii-windows-10/slave-agent.jnlp -secret %JENKINS_WIN10_NODE_SECRET% -noCertificateCheck' || true
 
 - job:
-    name: windows-acceptance-tests
-    description: 'GPII Windows acceptance tests'
-    node: gpii-windows-10
-    workspace: c:\vagrant
-    builders:
-      - batch: node tests\AcceptanceTests.js builtIn
-    publishers:
-      - email:
-          recipients: ci@lists.gpii.net
-
-- job:
     name: windows-unit-tests
     description: 'GPII Windows unit tests'
     node: gpii-windows-10
     workspace: c:\vagrant
     builders:
       - batch: node tests\UnitTests.js
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
+
+- job:
+    name: windows-acceptance-tests
+    description: 'GPII Windows acceptance tests'
+    node: gpii-windows-10
+    workspace: c:\vagrant
+    builders:
+      - batch: node tests\AcceptanceTests.js builtIn
     publishers:
       - email:
           recipients: ci@lists.gpii.net
