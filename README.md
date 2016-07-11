@@ -19,7 +19,7 @@ Pull requests sent by user accounts whitelisted in the [defaults.yml](https://gi
 
 ### How to Avoid Triggering a Job
 
-If you would like to avoid triggering a job please type the following text in your PR comment:
+If you would like to avoid triggering a job please include the following text in your PR comment:
 
 ```
 [skip ci]
@@ -27,7 +27,7 @@ If you would like to avoid triggering a job please type the following text in yo
 
 ### How to Manually Trigger a Job
 
-If an unrecognized account is used to send a PR then the CI server will post a comment for that PR asking an administrator to verify changes and trigger the job. You can trigger jobs by posting the following comment:
+If an unrecognized account is used to send a PR then the CI server will post a comment for that PR asking an administrator to verify changes and trigger the job. An administrator can trigger jobs by posting the following comment:
 
 ```
 ok to test
