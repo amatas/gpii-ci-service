@@ -34,3 +34,7 @@ ok to test
 ```
 
 A list of administrators named ``admin-list`` is maintained in the [defaults.yml](https://github.com/GPII/ci-service/blob/master/jenkins_jobs/defaults.yml) file. 
+
+### GitHub Account Used by CI Server
+
+The CI server uses the [gpii-bot](https://github.com/gpii-bot) account to post PR comments. It has to be added as a collaborator to every repository that needs to be integrated with the CI service.
