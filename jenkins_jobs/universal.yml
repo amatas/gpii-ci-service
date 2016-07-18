@@ -3,6 +3,10 @@
     description: 'Main Jenkins job responsible for orchestrating tasks required to run GPII Universal tests'
     project-type: multijob
     node: h-0005.tor1.inclusivedesign.ca
+    properties:
+      # Required by the GitHub PR builder plugin.
+      - github:
+          url: https://github.com/GPII/universal/
     scm:
       # Before making changes to the Git repository URL and/or branch(es) please
       # make sure that a Vagrantfile and other content required to provision test
@@ -14,8 +18,6 @@
           url: https://github.com/GPII/universal.git
           branches:
             - master
-    triggers:
-      - github
     builders:
       # Each parent multijob builder passes the Jenkins WORKSPACE environment
       # variable to its child job as a parameter so that a common Git working
