@@ -29,11 +29,6 @@
             - name: create-windows-vm
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
-          name: windows-build
-          condition: COMPLETED
-          projects:
-            - name: windows-build
-      - multijob:
           name: windows-unit-tests
           condition: COMPLETED
           projects:
