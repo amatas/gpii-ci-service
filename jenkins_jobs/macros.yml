@@ -1,0 +1,36 @@
+# The gh-pr-builder macro should be used in jobs where the GitHub PR Builder plugin is required.
+- trigger:
+    name: gh-pr-builder
+    triggers:
+      - github-pull-request:
+          # List of admins who can trigger jobs for PRs opened by unrecognized users.
+          admin-list:
+            - amb26
+            - cindyli            
+            - colinbdclark
+            - javihernandez
+            - kaspermarkus
+            - simonbates
+            - sgithens
+            - yzen
+          # Whitelist the following users so that their PRs automatically trigger jobs. 
+          white-list:
+            - amatas
+            - avtar
+            - bsheytanov
+            - gloob
+            - gtirloni
+            - klown
+            - localduke
+            - michelled
+            - SteveALee
+            - Thanos21
+            - the-t-in-rtf
+            - triffon
+            - waharnum
+          # Poll GitHub every five minutes.
+          cron: '*/5 * * * *'
+          build-desc-template: 'Triggered by PR'
+          success-comment: 'CI job passed.'
+          failure-comment: 'CI job failed. Please visit http://lists.gpii.net/pipermail/ci/ for more details.'
+          error-comment: 'CI job error. Please visit http://lists.gpii.net/pipermail/ci/ for more details.'
