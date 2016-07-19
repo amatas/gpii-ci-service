@@ -7,6 +7,8 @@
       # Required by the GitHub PR builder plugin.
       - github:
           url: https://github.com/GPII/windows/
+    triggers:
+      - gh-pr-builder
     scm:
       # Before making changes to the Git repository URL and/or branch(es) please
       # make sure that a Vagrantfile and other content required to provision test
@@ -28,11 +30,6 @@
           projects:
             - name: create-windows-vm
               predefined-parameters: parent_workspace=$WORKSPACE
-      - multijob:
-          name: windows-build
-          condition: COMPLETED
-          projects:
-            - name: windows-build
       - multijob:
           name: windows-unit-tests
           condition: COMPLETED

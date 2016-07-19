@@ -15,7 +15,7 @@ The remaining definitions in the ``jenkins_jobs`` directory are what the GPII bu
 
 ## Triggering CI Jobs
 
-Pull requests sent by user accounts whitelisted in the [defaults.yml](https://github.com/GPII/ci-service/blob/master/jenkins_jobs/defaults.yml) file will trigger builds in the CI environment using the [GitHub Pull Request Builder plugin](http://docs.openstack.org/infra/jenkins-job-builder/triggers.html#triggers.github-pull-request). The CI server checks for PR changes every five minutes.
+Pull requests sent by user accounts whitelisted in the [macros.yml](https://github.com/GPII/ci-service/blob/master/jenkins_jobs/macros.yml) file will trigger builds in the CI environment using the [GitHub Pull Request Builder plugin](http://docs.openstack.org/infra/jenkins-job-builder/triggers.html#triggers.github-pull-request). The CI server checks for PR changes every five minutes.
 
 ### How to Avoid Triggering a Job
 
@@ -33,7 +33,7 @@ If an unrecognized account is used to send a PR then the CI server will post a c
 ok to test
 ```
 
-A list of administrators named ``admin-list`` is maintained in the [defaults.yml](https://github.com/GPII/ci-service/blob/master/jenkins_jobs/defaults.yml) file. 
+A list of administrators named ``admin-list`` is maintained in the [macros.yml](https://github.com/GPII/ci-service/blob/master/jenkins_jobs/macros.yml) file. 
 
 ### GitHub Account Used by CI Server
 
