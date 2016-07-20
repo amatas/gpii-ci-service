@@ -15,6 +15,8 @@ The remaining definitions in the ``jenkins_jobs`` directory are what the GPII bu
 
 Pull requests sent by user accounts whitelisted in the [macros.yml](https://github.com/GPII/ci-service/blob/master/jenkins_jobs/macros.yml) file will trigger builds in the CI environment using the [GitHub Pull Request Builder plugin](http://docs.openstack.org/infra/jenkins-job-builder/triggers.html#triggers.github-pull-request). The CI server checks for PR changes every five minutes.
 
+Triggered CI jobs report their results as PR comments. Results will usually state whether a job passed or failed.
+
 ### How to Avoid Triggering a Job
 
 If you would like to avoid triggering a job please include the following text in your PR comment:
