@@ -10,16 +10,7 @@
     triggers:
       - gh-pr-builder
     scm:
-      # Before making changes to the Git repository URL and/or branch(es) please
-      # make sure that a Vagrantfile and other content required to provision test
-      # VMs is available.
-      #
-      # TODO: Please note that a build failure in one branch will stop the entire
-      # job even if other branches need to be built. 
-      - git:
-          url: https://github.com/GPII/linux.git
-          branches:
-            - master
+      - gh-pr-scm
     builders:
       # Each parent multijob builder passes the Jenkins WORKSPACE environment
       # variable to its child job as a parameter so that a common Git working
