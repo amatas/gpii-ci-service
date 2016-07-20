@@ -4,8 +4,6 @@ The [GPII Continuous Integration server](https://ci.gpii.net/) uses [Jenkins Job
 
 The CI server is deployed on a CentOS VM. It delegates the majority of job tasks to physical hosts so that job performance issues don't affect the Jenkins process and also because certain jobs require VMs that can provide windowing environments. One exception is the ``update-jenkins-job-definitions`` job which runs on the CI server itself. This job should not be removed.
 
-For security reasons an Nginx host sits in front of the CI server and creates a read-only archive of its UI. The contents of this archive are served when the https://ci.gpii.net URL is visited. The CI server itself can only be reached by a limited number of hosts.
-
 The remaining definitions in the ``jenkins_jobs`` directory are what the GPII build jobs use:
 
 * ``defaults.yml`` - default values used by multiple jobs
@@ -13,7 +11,7 @@ The remaining definitions in the ``jenkins_jobs`` directory are what the GPII bu
 * ``universal.yml`` - job defintion for the [GPII Universal](https://github.com/gpii/universal/) project
 * ``windows.yml`` - job defintion for the [GPII Windows Framework](https://github.com/gpii/windows/) project
 
-## Triggering CI Jobs
+## How CI Jobs Get Triggered
 
 Pull requests sent by user accounts whitelisted in the [macros.yml](https://github.com/GPII/ci-service/blob/master/jenkins_jobs/macros.yml) file will trigger builds in the CI environment using the [GitHub Pull Request Builder plugin](http://docs.openstack.org/infra/jenkins-job-builder/triggers.html#triggers.github-pull-request). The CI server checks for PR changes every five minutes.
 
@@ -35,6 +33,6 @@ ok to test
 
 A list of administrators named ``admin-list`` is maintained in the [macros.yml](https://github.com/GPII/ci-service/blob/master/jenkins_jobs/macros.yml) file. 
 
-### GitHub Account Used by CI Server
+## How Can Repositories Use This Service?  
 
-The CI server uses the [gpii-bot](https://github.com/gpii-bot) account to post PR comments. It has to be added as a collaborator to every repository that needs to be integrated with the CI service.
+The CI server uses the [gpii-bot](https://github.com/gpii-bot) account to post PR comments. It has to be added as a collaborator, [with push access](https://developer.github.com/v3/repos/statuses/#create-a-status), to every repository that needs to be integrated with the CI service.
