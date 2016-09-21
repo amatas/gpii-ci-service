@@ -26,11 +26,13 @@
           condition: COMPLETED
           projects:
             - name: windows-unit-tests
+              predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
           name: windows-acceptance-tests
           condition: COMPLETED
           projects:
             - name: windows-acceptance-tests
+              predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
           name: delete-windows-vm
           condition: SUCCESSFUL
@@ -47,25 +49,14 @@
       # Setting BUILD_ID for vagrant to make sure Jenkins process tree killer doesn't kill the VM
       # before the next job is started
       - shell: DISPLAY=:0 BUILD_ID=gpii-windows vagrant up --provider virtualbox
-      - shell: vagrant winrm -e -c 'cmd /c mkdir c:\jenkins'
-      - shell: vagrant winrm -e -c 'cmd /c curl -ks -o c:\jenkins\slave.jar https://ci-int.gpii.net/jnlpJars/slave.jar'
-      # Set a JENKINS_WIN10_NODE_SECRET variable so that the Jenkins node secret is available in
-      # the Windows VM environment.
-      - shell: /home/jenkins-gpii/bin/set-jenkins-win10-node-secret.sh
-      # Using Java Web Start to launch the node agent will not return the shell prompt so psexec's
-      # -d option is used to state that the process is interactive and waiting for it is not
-      # required. Unfortunately using that option with 'vagrant winrm' seems to return a non-zero
-      # return code which causes the Jenkins job to fail. That is why we explicitly return 0
-      # ourselves.
-      - shell: vagrant winrm -e -c 'psexec \\localhost -accepteula -u vagrant -p vagrant -w "c:\jenkins" -d -i cmd /c start /min java -jar slave.jar -jnlpUrl https://ci-int.gpii.net/computer/gpii-windows-10/slave-agent.jnlp -secret %JENKINS_WIN10_NODE_SECRET% -noCertificateCheck' || true
 
 - job:
     name: windows-unit-tests
     description: 'GPII Windows unit tests'
-    node: gpii-windows-10
-    workspace: c:\vagrant
+    node: h-0005.tor1.inclusivedesign.ca
+    workspace: $parent_workspace
     builders:
-      - batch: node tests\UnitTests.js
+      - shell: vagrant winrm -c "do.ps1 -c 'node tests\UnitTests.js'"
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -73,10 +64,10 @@
 - job:
     name: windows-acceptance-tests
     description: 'GPII Windows acceptance tests'
-    node: gpii-windows-10
-    workspace: c:\vagrant
+    node: h-0005.tor1.inclusivedesign.ca
+    workspace: $parent_workspace
     builders:
-      - batch: node tests\AcceptanceTests.js builtIn
+      - shell: vagrant winrm -c "do.ps1 -c 'node tests\AcceptanceTests.js builtIn'"
     publishers:
       - email:
           recipients: ci@lists.gpii.net
