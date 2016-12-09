@@ -5,9 +5,12 @@
       - github-pull-request:
           # List of admins who can trigger jobs for PRs opened by unrecognized users.
           admin-list:
+            - amatas
             - amb26
+            - avtar
             - cindyli            
             - colinbdclark
+            - gtirloni
             - javihernandez
             - kaspermarkus
             - simonbates
