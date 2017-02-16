@@ -1,0 +1,64 @@
+- job:
+    name: windows-tests
+    description: 'Main Jenkins job responsible for orchestrating tasks required to run GPII Windows tests'
+    project-type: multijob
+    node: h-0005.tor1.inclusivedesign.ca
+    properties:
+      # Required by the GitHub PR builder plugin.
+      - github:
+        url: https://github.com/GPII/gpii-app
+    triggers:
+      - gh-pr-builder
+    scm:
+      - gh-pr-scm
+    builders:
+      # Each parent multijob builder passes the Jenkins WORKSPACE environment
+      # variable to its child job as a parameter so that a common Git working
+      # directory can be used.
+      - multijob:
+          name: create-windows-vm
+          condition: COMPLETED
+          projects:
+            - name: create-windows-vm
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: windows-tests
+          condition: COMPLETED
+          projects:
+            - name: windows-unit-tests
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: delete-windows-vm
+          condition: SUCCESSFUL
+          projects:
+            - name: delete-windows-vm
+              predefined-parameters: parent_workspace=$WORKSPACE
+
+- job:
+    name: create-windows-vm
+    description: 'Job responsible for creating a test VM'
+    node: h-0005.tor1.inclusivedesign.ca
+    workspace: $parent_workspace
+    builders:
+      # Setting BUILD_ID for vagrant to make sure Jenkins process tree killer doesn't kill the VM
+      # before the next job is started
+      - shell: DISPLAY=:0 BUILD_ID=gpii-windows-hst vagrant up --provider virtualbox
+
+- job:
+    name: windows-tests
+    description: 'GPII-APP Windows tests'
+    node: h-0005.tor1.inclusivedesign.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: vagrant ssh -- "powershell -c 'do.ps1 -c '\''npm test'\'''"
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
+
+- job:
+    name: delete-windows-vm
+    description: 'Job responsible for deleting the test VM'
+    node: h-0005.tor1.inclusivedesign.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: vagrant destroy -f
