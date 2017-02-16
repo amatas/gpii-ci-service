@@ -50,7 +50,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: vagrant winrm -c "do.ps1 -c 'npm tests'"
+      - shell: vagrant winrm -c "do.ps1 -c 'npm test'"
     publishers:
       - email:
           recipients: ci@lists.gpii.net
