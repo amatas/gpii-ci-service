@@ -56,7 +56,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: vagrant ssh -- "powershell -c 'do.ps1 -c '\''node tests\UnitTests.js'\'''"
+      - shell: vagrant winrm -c "do.ps1 -c 'node tests\UnitTests.js'"
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -67,7 +67,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: vagrant ssh -- "powershell -c 'do.ps1 -c '\''node tests\AcceptanceTests.js builtIn'\'''"
+      - shell: vagrant winrm -c "do.ps1 -c 'node tests\AcceptanceTests.js builtIn'"
     publishers:
       - email:
           recipients: ci@lists.gpii.net
