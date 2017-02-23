@@ -14,7 +14,7 @@
     wrappers:
       - timeout:
           # Abort after these many minutes
-          timeout: 90
+          timeout: 120
           # Mark the build as failed
           fail: true
     builders:
@@ -49,6 +49,13 @@
       # Setting BUILD_ID for vagrant to make sure Jenkins process tree killer doesn't kill the VM
       # before the next job is started
       - shell: DISPLAY=:0 BUILD_ID=gpii-app vagrant up --provider virtualbox
+    wrappers:
+      - timeout:
+          # Abort after these many minutes
+          timeout: 60
+          # Mark the build as failed
+          fail: true
+
 
 - job:
     name: gpii-app-test
@@ -60,6 +67,13 @@
     publishers:
       - email:
           recipients: ci@lists.gpii.net
+    wrappers:
+      - timeout:
+          # Abort after these many minutes
+          timeout: 60
+          # Mark the build as failed
+          fail: true
+
 
 - job:
     name: delete-gpii-app-vm
