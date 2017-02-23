@@ -11,6 +11,12 @@
       - gh-pr-builder
     scm:
       - gh-pr-scm
+    wrappers:
+      - timeout:
+          # Abort after these many minutes
+          timeout: 90
+          # Mark the build as failed
+          fail: true
     builders:
       # Each parent multijob builder passes the Jenkins WORKSPACE environment
       # variable to its child job as a parameter so that a common Git working
