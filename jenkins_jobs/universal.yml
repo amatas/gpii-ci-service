@@ -65,7 +65,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: vagrant ssh -c 'cd /home/vagrant/sync/node_modules/universal && DISPLAY=:0 testem ci --file tests/web/testem_qi.json'
+      - shell: npm run test:vagrantBrowser
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -78,7 +78,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: vagrant ssh -c 'cd /home/vagrant/sync/node_modules/universal && npm test'
+      - shell: npm run test:vagrantNode
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -89,7 +89,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: vagrant ssh -c 'cd /home/vagrant/sync/node_modules/universal && node tests/ProductionConfigTests.js'
+      - shell: npm run test:vagrantProduction
     publishers:
       - email:
           recipients: ci@lists.gpii.net
