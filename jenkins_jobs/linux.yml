@@ -59,7 +59,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: grunt unit-tests
+      - shell: npm run test:vagrantUnit
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -70,7 +70,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: grunt acceptance-tests
+      - shell: npm run test:vagrantAcceptance
     publishers:
       - email:
           recipients: ci@lists.gpii.net
