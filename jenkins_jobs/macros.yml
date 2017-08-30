@@ -8,15 +8,21 @@
             - amatas
             - amb26
             - avtar
-            - cindyli            
+            - cindyli
             - colinbdclark
+            - gloob
             - gtirloni
             - javihernandez
             - kaspermarkus
-            - simonbates
+            - klown
+            - michelled
             - sgithens
+            - simonbates
+            - stegru
+            - the-t-in-rtf
+            - waharnum
             - yzen
-          # Whitelist the following users so that their PRs automatically trigger jobs. 
+          # Whitelist the following users so that their PRs automatically trigger jobs.
           white-list:
             - amatas
             - avtar
@@ -39,9 +45,9 @@
           failure-comment: 'CI job failed. Please visit http://lists.gpii.net/pipermail/ci/ for more details.'
           error-comment: 'CI job error. Please visit http://lists.gpii.net/pipermail/ci/ for more details.'
 
-# The gh-pr-scm macro should be used alongside gh-pr-builder. It will only checkout the PR 
-# contributor's repository and branch. This changes the default behaviour of the plugin 
-# which attempts to merge changes with a base branch ('master' in our case). This is a 
+# The gh-pr-scm macro should be used alongside gh-pr-builder. It will only checkout the PR
+# contributor's repository and branch. This changes the default behaviour of the plugin
+# which attempts to merge changes with a base branch ('master' in our case). This is a
 # workaround for the following issue: https://issues.jenkins-ci.org/browse/JENKINS-35170
 - scm:
     name: gh-pr-scm
