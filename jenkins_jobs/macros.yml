@@ -40,10 +40,10 @@
             - waharnum
           # Poll GitHub every five minutes.
           cron: '*/5 * * * *'
-          build-desc-template: 'Triggered by PR'
-          success-comment: 'CI job passed.'
-          failure-comment: 'CI job failed. Please visit http://lists.gpii.net/pipermail/ci/ for more details.'
-          error-comment: 'CI job error. Please visit http://lists.gpii.net/pipermail/ci/ for more details.'
+          build-desc-template: 'PR#${ghprbPullId} -- ${ghprbPullLink}'
+          success-comment: 'CI job passed: ${BUILD_URL}'
+          failure-comment: 'CI job failed: ${BUILD_URL}'
+          error-comment: 'CI job error: ${BUILD_URL}'
 
 # The gh-pr-scm macro should be used alongside gh-pr-builder. It will only checkout the PR
 # contributor's repository and branch. This changes the default behaviour of the plugin
