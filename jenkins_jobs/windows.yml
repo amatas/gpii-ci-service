@@ -16,10 +16,10 @@
       # variable to its child job as a parameter so that a common Git working
       # directory can be used.
       - multijob:
-          name: create-windows-vm
+          name: windows-create-vm
           condition: COMPLETED
           projects:
-            - name: create-windows-vm
+            - name: windows-create-vm
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
           name: windows-unit-tests
@@ -34,14 +34,14 @@
             - name: windows-acceptance-tests
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
-          name: delete-windows-vm
+          name: windows-delete-vm
           condition: SUCCESSFUL
           projects:
-            - name: delete-windows-vm
+            - name: windows-delete-vm
               predefined-parameters: parent_workspace=$WORKSPACE
 
 - job:
-    name: create-windows-vm
+    name: windows-create-vm
     description: 'Job responsible for creating a test VM'
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
@@ -73,7 +73,7 @@
           recipients: ci@lists.gpii.net
 
 - job:
-    name: delete-windows-vm
+    name: windows-delete-vm
     description: 'Job responsible for deleting the test VM'
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace

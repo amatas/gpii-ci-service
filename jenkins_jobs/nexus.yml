@@ -16,10 +16,16 @@
       # variable to its child job as a parameter so that a common Git working
       # directory can be used.
       - multijob:
-          name: create-nexus-vm
+          name: nexus-create-vm
           condition: COMPLETED
           projects:
-            - name: create-nexus-vm
+            - name: nexus-create-vm
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: nexus-code-analysis
+          condition: COMPLETED
+          projects:
+            - name: nexus-code-analysis
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
           name: nexus-unit-tests
@@ -28,14 +34,14 @@
             - name: nexus-unit-tests
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
-          name: delete-nexus-vm
+          name: nexus-delete-vm
           condition: SUCCESSFUL
           projects:
-            - name: delete-nexus-vm
+            - name: nexus-delete-vm
               predefined-parameters: parent_workspace=$WORKSPACE
 
 - job:
-    name: create-nexus-vm
+    name: nexus-create-vm
     description: 'Job responsible for creating a test VM'
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
@@ -46,6 +52,17 @@
       # Since the node_modules directory might not be synchronized between VM and host (GPII-2060)
       # it's necessary to run `npm install` on the host to get auxiliary tools installed (e.g grunt)
       - shell: BUILD_ID=gpii-nexus vagrant up --provider virtualbox && npm install
+
+- job:
+    name: nexus-code-analysis
+    description: 'GPII Nexus unit tests'
+    node: h-0005.tor1.inclusivedesign.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: $(npm bin)/grunt lint
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
 
 - job:
     name: nexus-unit-tests
@@ -59,7 +76,7 @@
           recipients: ci@lists.gpii.net
 
 - job:
-    name: delete-nexus-vm
+    name: nexus-delete-vm
     description: 'Job responsible for deleting the test VM'
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
