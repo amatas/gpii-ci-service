@@ -16,10 +16,16 @@
       # variable to its child job as a parameter so that a common Git working
       # directory can be used.
       - multijob:
-          name: create-universal-vm
+          name: universal-create-vm
           condition: COMPLETED
           projects:
-            - name: create-universal-vm
+            - name: universal-create-vm
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: universal-code-analysis
+          condition: COMPLETED
+          projects:
+            - name: universal-code-analysis
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
           name: universal-browser-tests
@@ -40,14 +46,14 @@
             - name: universal-node-production-tests
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
-          name: delete-universal-vm
+          name: universal-delete-vm
           condition: SUCCESSFUL
           projects:
-            - name: delete-universal-vm
+            - name: universal-delete-vm
               predefined-parameters: parent_workspace=$WORKSPACE
 
 - job:
-    name: create-universal-vm
+    name: universal-create-vm
     description: 'Job responsible for creating a test VM'
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
@@ -58,6 +64,17 @@
       # Since the node_modules directory might not be synchronized between VM and host (GPII-2060)
       # it's necessary to run `npm install` on the host to get auxiliary tools installed (e.g grunt)
       - shell: BUILD_ID=gpii-universal DISPLAY=:0 vagrant up --provider virtualbox && npm install
+
+- job:
+    name: universal-code-analysis
+    description: 'GPII Universal code analysis'
+    node: h-0005.tor1.inclusivedesign.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: $(npm bin)/grunt lint
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
 
 - job:
     name: universal-browser-tests
@@ -95,10 +112,9 @@
           recipients: ci@lists.gpii.net
 
 - job:
-    name: delete-universal-vm
+    name: universal-delete-vm
     description: 'Job responsible for deleting the test VM'
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
       - shell: vagrant destroy -f
-        
