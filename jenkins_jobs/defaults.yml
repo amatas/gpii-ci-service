@@ -2,9 +2,6 @@
     name: global
     project-type: freestyle
     concurrent: false
-    publishers:
-      - email:
-          recipients: ops-notifications@lists.inclusivedesign.ca
     # If repository issues are encountered retry the specified number of times. 
     retry-count: 5
     logrotate:
