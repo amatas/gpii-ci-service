@@ -55,7 +55,7 @@
     scm:
         - git:
             url: git@github.com:inclusive-design/ops-shared.git
-            credentials-id: 5393cf30-f707-473a-9642-e1c46128f20a
+            credentials-id: aa656fd8-6d2f-416f-ab65-9dc1876d1149
             skip-tag: true
             submodule:
               recursive: true
