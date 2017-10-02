@@ -4,6 +4,7 @@
     concurrent: false
     # If repository issues are encountered retry the specified number of times. 
     retry-count: 5
+    build_timeout: 45
     logrotate:
       daysToKeep: 180
     wrappers:
