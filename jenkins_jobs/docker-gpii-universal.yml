@@ -104,9 +104,6 @@
             - '{git_app_branch}'
     triggers:
       - github
-      - reverse:
-          jobs: 'docker-idi-nodejs-{nodejs_version}'
-          result: success
     builders:
       - multijob:
           name: Cleanup
