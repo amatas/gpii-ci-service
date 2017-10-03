@@ -36,7 +36,6 @@
     git_app_branch: master
     git_docker_repo: https://github.com/avtar/qi-dashboard-backend-demo.git
     git_docker_branch: master
-    nodejs_version: 4.4.1
     docker_username: gpii
     docker_image: qi-dashboard-backend
     docker_tag: latest
@@ -49,7 +48,6 @@
     jenkins_tag: master
     git_app_branch: master
     git_docker_branch: master
-    nodejs_version: 4.4.1
     docker_tag: latest
     jobs:
       - 'docker-gpii-qi-dashboard-backend-all'
@@ -106,7 +104,7 @@
     triggers:
       - github
       - reverse:
-          jobs: 'docker-idi-nodejs-{nodejs_version}'
+          jobs: 'docker-gpii-universal-{jenkins_tag}'
           result: success
     builders:
       - multijob:

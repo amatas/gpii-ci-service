@@ -46,7 +46,7 @@
       - reverse:
           result: success
           jobs:
-            - docker-idi-couchdb-latest
+            - docker-gpii-universal-master
             - docker-gpii-preferences-dataloader-master
             - docker-gpii-preferences-server-master
             - docker-gpii-flow-manager-master

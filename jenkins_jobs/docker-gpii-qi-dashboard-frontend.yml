@@ -36,7 +36,6 @@
     git_app_branch: GPII-2204
     git_docker_repo: https://github.com/cindyli/qi-dashboard-frontend-demo.git
     git_docker_branch: GPII-2204
-    nodejs_version: lts
     docker_username: gpii
     docker_image: qi-dashboard-frontend
     docker_tag: latest
@@ -49,7 +48,6 @@
     jenkins_tag: GPII-2204
     git_app_branch: GPII-2204
     git_docker_branch: GPII-2204
-    nodejs_version: lts
     docker_tag: latest
     jobs:
       - 'docker-gpii-qi-dashboard-frontend-all'
@@ -105,7 +103,7 @@
     triggers:
       - github
       - reverse:
-          jobs: 'docker-idi-nodejs-{nodejs_version}'
+          jobs: 'docker-gpii-universal-{jenkins_tag}'
           result: success
     builders:
       - multijob:
