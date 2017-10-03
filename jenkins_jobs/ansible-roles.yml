@@ -64,4 +64,4 @@
 
     publishers:
       - email:
-            recipients: ops-notifications@lists.inclusivedesign.ca
+            recipients: gpii-infra-notifications@lists.gpii.net
