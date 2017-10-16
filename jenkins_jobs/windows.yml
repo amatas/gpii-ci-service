@@ -22,6 +22,12 @@
             - name: windows-create-vm
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
+          name: windows-code-analysis
+          condition: COMPLETED
+          projects:
+            - name: windows-code-analysis
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
           name: windows-unit-tests
           condition: COMPLETED
           projects:
@@ -49,6 +55,17 @@
       # Setting BUILD_ID for vagrant to make sure Jenkins process tree killer doesn't kill the VM
       # before the next job is started
       - shell: DISPLAY=:0 BUILD_ID=gpii-windows vagrant up --provider virtualbox
+
+- job:
+    name: windows-code-analysis
+    description: 'GPII Windows code analysis'
+    node: h-0005.tor1.inclusivedesign.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: vagrant winrm -c "do.ps1 -c 'grunt lint'"
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
 
 - job:
     name: windows-unit-tests
