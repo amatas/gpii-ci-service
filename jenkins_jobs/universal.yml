@@ -8,6 +8,7 @@
       - github:
           url: https://github.com/GPII/universal/
     triggers:
+      - github
       - gh-pr-builder
     scm:
       - gh-pr-scm
