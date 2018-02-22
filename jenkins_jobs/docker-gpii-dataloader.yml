@@ -1,5 +1,5 @@
 ---
-# These jobs will build the GPII/preferences-dataloader Docker image.
+# These jobs will build the GPII/gpii-dataloader Docker image.
 #
 # The variables git_*_{repo,branch} allow for the flexibility to pick
 # and match the branches are necessary. Ideally, they should be equal
@@ -27,15 +27,15 @@
 # that should be built.
 
 - defaults:
-    name: gpii-preferences-dataloader
+    name: gpii-dataloader
 
     git_app_repo: https://github.com/GPII/universal.git
     git_app_branch: master
 
-    git_docker_repo: https://github.com/gpii-ops/docker-preferences-dataloader.git
+    git_docker_repo: https://github.com/gpii-ops/docker-gpii-dataloader.git
     git_docker_branch: master
     docker_username: gpii
-    docker_image: preferences-dataloader
+    docker_image: gpii-dataloader
     docker_tag: latest
 
     build_timeout: 30
@@ -43,36 +43,36 @@
     jenkins_node: i-0027.tor1.inclusivedesign.ca
 
 - project:
-    name: gpii-preferences-dataloader-master
+    name: gpii-dataloader-master
     jenkins_tag: master
     git_app_branch: master
     git_docker_branch: master
     docker_tag: latest
     jobs:
-      - 'docker-gpii-preferences-dataloader-all'
+      - 'docker-gpii-dataloader-all'
 
 # WARNING: Be careful changing anything below.
 
 # Used to ensure only one `docker push` command runs at a time
 - wrapper:
-    name: gpii-preferences-dataloader-docker-push
+    name: gpii-dataloader-docker-push
     wrappers:
       - exclusion:
           resources:
-            - 'gpii-preferences-dataloader-docker-push'
+            - 'gpii-dataloader-docker-push'
 
 - job-group:
-    name: 'docker-gpii-preferences-dataloader-all'
+    name: 'docker-gpii-dataloader-all'
     jobs:
-      - 'docker-gpii-preferences-dataloader-{jenkins_tag}'
-      - 'docker-gpii-preferences-dataloader-{jenkins_tag}-build'
-      - 'docker-gpii-preferences-dataloader-{jenkins_tag}-release'
-      - 'docker-gpii-preferences-dataloader-{jenkins_tag}-cleanup'
+      - 'docker-gpii-dataloader-{jenkins_tag}'
+      - 'docker-gpii-dataloader-{jenkins_tag}-build'
+      - 'docker-gpii-dataloader-{jenkins_tag}-release'
+      - 'docker-gpii-dataloader-{jenkins_tag}-cleanup'
 
 - job-template:
-    defaults: gpii-preferences-dataloader
-    name: 'docker-gpii-preferences-dataloader-{jenkins_tag}'
-    description: 'Builds, tests and pushes the GPII Preferences Server Docker image'
+    defaults: gpii-dataloader
+    name: 'docker-gpii-dataloader-{jenkins_tag}'
+    description: 'Builds, tests and pushes the GPII dataloader Docker image'
     project-type: multijob
     concurrent: false
     node: '{jenkins_node}'
@@ -108,24 +108,24 @@
           name: Cleanup
           condition: SUCCESSFUL
           projects:
-            - name: docker-gpii-preferences-dataloader-{jenkins_tag}-cleanup
+            - name: docker-gpii-dataloader-{jenkins_tag}-cleanup
               predefined-parameters: parent_workspace=$WORKSPACE/docker
       - multijob:
           name: Build
           condition: SUCCESSFUL
           projects:
-            - name: docker-gpii-preferences-dataloader-{jenkins_tag}-build
+            - name: docker-gpii-dataloader-{jenkins_tag}-build
               predefined-parameters: parent_workspace=$WORKSPACE/docker
       - multijob:
           name: Release
           condition: SUCCESSFUL
           projects:
-            - name: docker-gpii-preferences-dataloader-{jenkins_tag}-release
+            - name: docker-gpii-dataloader-{jenkins_tag}-release
               predefined-parameters: parent_workspace=$WORKSPACE/docker
 
 - job-template:
-    defaults: gpii-preferences-dataloader
-    name: 'docker-gpii-preferences-dataloader-{jenkins_tag}-cleanup'
+    defaults: gpii-dataloader
+    name: 'docker-gpii-dataloader-{jenkins_tag}-cleanup'
     description: 'Removes build artifacts'
     node: '{jenkins_node}'
     workspace: $parent_workspace
@@ -133,8 +133,8 @@
       - shell: docker rmi -f {docker_username}/{docker_image}:{docker_tag} || echo "docker rmi failed. image probably does not exist"
 
 - job-template:
-    defaults: gpii-preferences-dataloader
-    name: 'docker-gpii-preferences-dataloader-{jenkins_tag}-build'
+    defaults: gpii-dataloader
+    name: 'docker-gpii-dataloader-{jenkins_tag}-build'
     description: 'Builds Docker image'
     node: '{jenkins_node}'
     workspace: $parent_workspace
@@ -142,13 +142,13 @@
       - shell: docker build --pull -t {docker_username}/{docker_image}:{docker_tag} .
 
 - job-template:
-    defaults: gpii-preferences-dataloader
-    name: 'docker-gpii-preferences-dataloader-{jenkins_tag}-release'
+    defaults: gpii-dataloader
+    name: 'docker-gpii-dataloader-{jenkins_tag}-release'
     description: 'Publishes to Docker Hub'
     node: '{jenkins_node}'
     workspace: $parent_workspace
     wrappers:
-      - gpii-preferences-dataloader-docker-push
+      - gpii-dataloader-docker-push
     builders:
       - critical-block-start
       - shell: docker push {docker_username}/{docker_image}:{docker_tag}
