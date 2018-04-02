@@ -51,7 +51,7 @@
       #
       # Since the node_modules directory might not be synchronized between VM and host (GPII-2060)
       # it's necessary to run `npm install` on the host to get auxiliary tools installed (e.g grunt)
-      - shell: BUILD_ID=gpii-nexus vagrant up --provider virtualbox && npm install
+      - shell: BUILD_ID=gpii-nexus vagrant up --provider virtualbox
 
 - job:
     name: nexus-code-analysis
@@ -59,7 +59,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: $(npm bin)/grunt lint
+      - shell: vagrant ssh -c 'cd /home/vagrant/sync/nexus; $(npm bin)/grunt lint'
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -70,7 +70,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: grunt tests
+      - shell: vagrant ssh -c 'cd /home/vagrant/sync/nexus; $(npm bin)/grunt tests'
     publishers:
       - email:
           recipients: ci@lists.gpii.net
