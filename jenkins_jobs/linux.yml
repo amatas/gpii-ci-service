@@ -62,7 +62,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: vagrant ssh -c 'cd /home/vagrant/sync/linux; $(npm bin)/grunt lint'
+      - shell: vagrant ssh -c 'cd /home/vagrant/sync; $(npm bin)/grunt lint'
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -73,7 +73,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: vagrant ssh -c 'cd /home/vagrant/sync/linux; $(npm bin)/grunt unit-tests'
+      - shell: vagrant ssh -c 'cd /home/vagrant/sync; $(npm bin)/grunt unit-tests'
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -84,7 +84,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: vagrant ssh -c 'cd /home/vagrant/sync/linux; $(npm bin)/grunt acceptance-tests'
+      - shell: vagrant ssh -c 'cd /home/vagrant/sync; $(npm bin)/grunt acceptance-tests'
     publishers:
       - email:
           recipients: ci@lists.gpii.net
