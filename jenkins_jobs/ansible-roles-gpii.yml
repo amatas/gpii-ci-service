@@ -1,5 +1,5 @@
 - project:
-    name: ansible-roles
+    name: ansible-roles-gpii
     jobs:
         - '{role}':
             role: ansible-gpii-ci-worker

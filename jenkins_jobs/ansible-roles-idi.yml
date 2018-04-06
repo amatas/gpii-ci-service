@@ -1,5 +1,5 @@
 - project:
-    name: ansible-roles
+    name: ansible-roles-idi
     jobs:
         - '{role}':
             role: ansible-ansible
