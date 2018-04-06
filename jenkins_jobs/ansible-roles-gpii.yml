@@ -1,17 +1,17 @@
 - project:
     name: ansible-roles-gpii
     jobs:
-        - '{role}':
-            role: ansible-gpii-ci-worker
-        - '{role}':
-            role: ansible-gpii-version-updater
+        - '{gpiirole}':
+            gpiirole: ansible-gpii-ci-worker
+        - '{gpiirole}':
+            gpiirole: ansible-gpii-version-updater
 
 - job-template:
-    name: '{role}'
+    name: '{gpiirole}'
     project-type: 'freestyle'
     scm:
         - git:
-            url: 'https://github.com/gpii-ops/{role}.git'
+            url: 'https://github.com/gpii-ops/{gpiirole}.git'
             skip-tag: true
             branches:
                 - master
