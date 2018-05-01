@@ -54,9 +54,6 @@
     builders:
       # Setting BUILD_ID for the vagrant process to make sure the Jenkins process tree killer
       # doesn't kill the VM before the next job is started.
-      #
-      # Since the node_modules directory might not be synchronized between VM and host (GPII-2060)
-      # it's necessary to run `npm install` on the host to get auxiliary tools installed (e.g grunt)
       - shell: BUILD_ID=gpii-linux DISPLAY=:0 vagrant up --provider virtualbox && npm install
 
 - job:
@@ -65,7 +62,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: $(npm bin)/grunt lint
+      - shell: grunt lint
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -99,4 +96,3 @@
     workspace: $parent_workspace
     builders:
       - shell: vagrant destroy -f
-        

@@ -1,29 +1,25 @@
 - project:
-    name: ansible-roles
+    name: ansible-roles-idi
     jobs:
-        - '{role}':
-            role: ansible-ansible
-        - '{role}':
-            role: ansible-collectd
-        - '{role}':
-            role: ansible-grafana
-        - '{role}':
-            role: ansible-gpii-ci-worker
-        - '{role}':
-            role: ansible-gpii-version-updater
-        - '{role}':
-            role: ansible-influxdb
-        - '{role}':
-            role: ansible-nginx-common
-        - '{role}':
-            role: ansible-prometheus-tests
+        - '{idirole}':
+            idirole: ansible-ansible
+        - '{idirole}':
+            idirole: ansible-collectd
+        - '{idirole}':
+            idirole: ansible-grafana
+        - '{idirole}':
+            idirole: ansible-influxdb
+        - '{idirole}':
+            idirole: ansible-nginx-common
+        - '{idirole}':
+            idirole: ansible-prometheus-tests
 
 - job-template:
-    name: '{role}'
+    name: '{idirole}'
     project-type: 'freestyle'
     scm:
         - git:
-            url: 'https://github.com/idi-ops/{role}.git'
+            url: 'https://github.com/idi-ops/{idirole}.git'
             skip-tag: true
             branches:
                 - master
