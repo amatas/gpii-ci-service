@@ -21,6 +21,7 @@
       - 'container-gpii-production'
       - 'container-gpii-production-couchdb'
       - 'container-gpii-production-dataloader'
+      - 'container-gpii-production-preferences-server'
       - 'container-gpii-production-flow-manager'
       - 'container-gpii-production-qi-dashboard-backend'
       - 'container-gpii-production-qi-dashboard-frontend'
@@ -66,6 +67,13 @@
               predefined-parameters: parent_workspace=$WORKSPACE/ansible
 
       - multijob:
+          name: Preferences Server
+          condition: SUCCESSFUL
+          projects:
+            - name: 'container-gpii-production-preferences-server'
+              predefined-parameters: parent_workspace=$WORKSPACE/ansible
+
+      - multijob:
           name: Flow Manager
           condition: SUCCESSFUL
           projects:
@@ -107,6 +115,17 @@
       - deploy_credentials_production
     builders:
       - shell: '/usr/bin/ansible-playbook -i inventory/{ansible_inventory} -l {ansible_host_pattern} -t container-dataloader {ansible_playbook}'
+
+- job-template:
+    name: 'container-gpii-production-preferences-server'
+    description: Deploy Preferences Server container
+    defaults: gpii-production
+    node: '{jenkins_node}'
+    workspace: $parent_workspace
+    wrappers:
+      - deploy_credentials_production
+    builders:
+      - shell: '/usr/bin/ansible-playbook -i inventory/{ansible_inventory} -l {ansible_host_pattern} -t container-prefserver {ansible_playbook}'
 
 - job-template:
     name: 'container-gpii-production-flow-manager'

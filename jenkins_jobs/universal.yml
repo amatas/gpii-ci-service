@@ -40,6 +40,12 @@
             - name: universal-node-tests
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
+          name: universal-node-production-tests
+          condition: COMPLETED
+          projects:
+            - name: universal-node-production-tests
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
           name: universal-delete-vm
           condition: SUCCESSFUL
           projects:
