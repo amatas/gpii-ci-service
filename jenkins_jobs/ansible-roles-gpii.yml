@@ -2,8 +2,6 @@
     name: ansible-roles-gpii
     jobs:
         - '{gpiirole}':
-            gpiirole: ansible-gpii-ci-worker
-        - '{gpiirole}':
             gpiirole: ansible-gpii-version-updater
 
 - job-template:
