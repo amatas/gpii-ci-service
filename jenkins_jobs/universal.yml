@@ -98,6 +98,17 @@
           recipients: ci@lists.gpii.net
 
 - job:
+    name: universal-node-production-tests
+    description: 'GPII Universal node-based production tests'
+    node: h-0005.tor1.inclusivedesign.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: npm run test:vagrantProduction
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
+
+- job:
     name: universal-delete-vm
     description: 'Job responsible for deleting the test VM'
     node: h-0005.tor1.inclusivedesign.ca
