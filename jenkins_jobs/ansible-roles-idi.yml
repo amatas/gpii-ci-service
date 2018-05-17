@@ -6,6 +6,8 @@
         - '{idirole}':
             idirole: ansible-collectd
         - '{idirole}':
+            idirole: ansible-gpii-ci-worker
+        - '{idirole}':
             idirole: ansible-grafana
         - '{idirole}':
             idirole: ansible-influxdb
