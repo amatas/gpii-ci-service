@@ -32,7 +32,7 @@
     git_app_repo: https://github.com/GPII/universal.git
     git_app_branch: master
 
-    git_docker_repo: https://github.com/gpii-ops/docker-gpii-dataloader.git
+    git_docker_repo: https://github.com/gpii-ops/gpii-dataloader.git
     git_docker_branch: master
     docker_username: gpii
     docker_image: gpii-dataloader
@@ -49,7 +49,7 @@
     git_docker_branch: master
     docker_tag: latest
     jobs:
-      - 'docker-gpii-dataloader-all'
+      - 'gpii-dataloader-all'
 
 # WARNING: Be careful changing anything below.
 
@@ -62,16 +62,16 @@
             - 'gpii-dataloader-docker-push'
 
 - job-group:
-    name: 'docker-gpii-dataloader-all'
+    name: 'gpii-dataloader-all'
     jobs:
-      - 'docker-gpii-dataloader-{jenkins_tag}'
-      - 'docker-gpii-dataloader-{jenkins_tag}-build'
-      - 'docker-gpii-dataloader-{jenkins_tag}-release'
-      - 'docker-gpii-dataloader-{jenkins_tag}-cleanup'
+      - 'gpii-dataloader-{jenkins_tag}'
+      - 'gpii-dataloader-{jenkins_tag}-build'
+      - 'gpii-dataloader-{jenkins_tag}-release'
+      - 'gpii-dataloader-{jenkins_tag}-cleanup'
 
 - job-template:
     defaults: gpii-dataloader
-    name: 'docker-gpii-dataloader-{jenkins_tag}'
+    name: 'gpii-dataloader-{jenkins_tag}'
     description: 'Builds, tests and pushes the GPII dataloader Docker image'
     project-type: multijob
     concurrent: false
@@ -108,24 +108,24 @@
           name: Cleanup
           condition: SUCCESSFUL
           projects:
-            - name: docker-gpii-dataloader-{jenkins_tag}-cleanup
+            - name: gpii-dataloader-{jenkins_tag}-cleanup
               predefined-parameters: parent_workspace=$WORKSPACE/docker
       - multijob:
           name: Build
           condition: SUCCESSFUL
           projects:
-            - name: docker-gpii-dataloader-{jenkins_tag}-build
+            - name: gpii-dataloader-{jenkins_tag}-build
               predefined-parameters: parent_workspace=$WORKSPACE/docker
       - multijob:
           name: Release
           condition: SUCCESSFUL
           projects:
-            - name: docker-gpii-dataloader-{jenkins_tag}-release
+            - name: gpii-dataloader-{jenkins_tag}-release
               predefined-parameters: parent_workspace=$WORKSPACE/docker
 
 - job-template:
     defaults: gpii-dataloader
-    name: 'docker-gpii-dataloader-{jenkins_tag}-cleanup'
+    name: 'gpii-dataloader-{jenkins_tag}-cleanup'
     description: 'Removes build artifacts'
     node: '{jenkins_node}'
     workspace: $parent_workspace
@@ -134,7 +134,7 @@
 
 - job-template:
     defaults: gpii-dataloader
-    name: 'docker-gpii-dataloader-{jenkins_tag}-build'
+    name: 'gpii-dataloader-{jenkins_tag}-build'
     description: 'Builds Docker image'
     node: '{jenkins_node}'
     workspace: $parent_workspace
@@ -143,7 +143,7 @@
 
 - job-template:
     defaults: gpii-dataloader
-    name: 'docker-gpii-dataloader-{jenkins_tag}-release'
+    name: 'gpii-dataloader-{jenkins_tag}-release'
     description: 'Publishes to Docker Hub'
     node: '{jenkins_node}'
     workspace: $parent_workspace
