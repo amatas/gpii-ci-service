@@ -47,7 +47,7 @@
           result: success
           jobs:
             - docker-gpii-universal-master
-            - docker-gpii-dataloader-master
+            - gpii-dataloader-master
             - docker-gpii-preferences-server-master
             - docker-gpii-flow-manager-master
             - docker-gpii-qi-dashboard-backend-master
