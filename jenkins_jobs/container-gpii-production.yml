@@ -20,7 +20,7 @@
     jobs:
       - 'container-gpii-production'
       - 'container-gpii-production-couchdb'
-      - 'container-gpii-production-preferences-dataloader'
+      - 'container-gpii-production-dataloader'
       - 'container-gpii-production-preferences-server'
       - 'container-gpii-production-flow-manager'
       - 'container-gpii-production-qi-dashboard-backend'
@@ -63,7 +63,7 @@
           name: Data load
           condition: SUCCESSFUL
           projects:
-            - name: 'container-gpii-production-preferences-dataloader'
+            - name: 'container-gpii-production-dataloader'
               predefined-parameters: parent_workspace=$WORKSPACE/ansible
 
       - multijob:
@@ -106,8 +106,8 @@
       - shell: '/usr/bin/ansible-playbook -i inventory/{ansible_inventory} -l {ansible_host_pattern} -t container-couchdb {ansible_playbook}'
 
 - job-template:
-    name: 'container-gpii-production-preferences-dataloader'
-    description: Load preferences data
+    name: 'container-gpii-production-dataloader'
+    description: Load GPII data
     defaults: gpii-production
     node: '{jenkins_node}'
     workspace: $parent_workspace

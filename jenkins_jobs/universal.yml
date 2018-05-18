@@ -85,7 +85,7 @@
           recipients: ci@lists.gpii.net
       - tap:
           results: report.tap
-          
+
 - job:
     name: universal-node-tests
     description: 'GPII Universal node-based tests'
