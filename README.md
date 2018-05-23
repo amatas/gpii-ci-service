@@ -11,6 +11,8 @@ The remaining definitions in the ``jenkins_jobs`` directory are what the GPII bu
 * ``universal.yml`` - job defintion for the [GPII Universal](https://github.com/gpii/universal/) project
 * ``windows.yml`` - job defintion for the [GPII Windows Framework](https://github.com/gpii/windows/) project
 
+The changes made in this repository are applied using the [update-jenkins-job-definitions job](https://ci.gpii.net/view/All/job/update-jenkins-job-definitions/)
+
 ## How CI Jobs Get Triggered
 
 Pull requests sent by user accounts whitelisted in the [macros.yml](https://github.com/GPII/ci-service/blob/master/jenkins_jobs/macros.yml) file will trigger builds in the CI environment using the [GitHub Pull Request Builder plugin](http://docs.openstack.org/infra/jenkins-job-builder/triggers.html#triggers.github-pull-request). The CI server checks for PR changes every five minutes.
