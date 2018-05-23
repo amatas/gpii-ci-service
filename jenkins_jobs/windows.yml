@@ -45,7 +45,7 @@
           projects:
             - name: windows-delete-vm
               predefined-parameters: parent_workspace=$WORKSPACE
-     publishers:
+    publishers:
       - archive:
           artifacts: "reports/**, coverage/**"
           allow-empty: true

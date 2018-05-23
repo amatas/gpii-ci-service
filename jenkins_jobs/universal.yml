@@ -51,7 +51,7 @@
           projects:
             - name: universal-delete-vm
               predefined-parameters: parent_workspace=$WORKSPACE
-     publishers:
+    publishers:
       - archive:
           artifacts: "reports/**, coverage/**"
           allow-empty: true
