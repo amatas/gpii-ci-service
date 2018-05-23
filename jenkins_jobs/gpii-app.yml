@@ -39,6 +39,11 @@
           projects:
             - name: delete-gpii-app-vm
               predefined-parameters: parent_workspace=$WORKSPACE
+    publishers:
+      - archive:
+          artifacts: "reports/**, coverage/**"
+          allow-empty: true
+          only-if-success: true
 
 - job:
     name: create-gpii-app-vm
