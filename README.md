@@ -38,3 +38,9 @@ A list of administrators named ``admin-list`` is maintained in the [macros.yml](
 ## How Can Repositories Use This Service?  
 
 The CI server uses the [gpii-bot](https://github.com/gpii-bot) account to post PR comments. It has to be added as a collaborator, [with push access](https://developer.github.com/v3/repos/statuses/#create-a-status), to every repository that needs to be integrated with the CI service.
+
+## Where can I find help about how to define jobs
+
+The first place to look at is the [Jenkins Job Builder documentation](http://docs.openstack.org/infra/jenkins-job-builder) which use to be updated.
+
+The [fixtures directory](https://github.com/openstack-infra/jenkins-job-builder/tree/master/tests/builders/fixtures) which can be found in each [JJB module tests](https://github.com/openstack-infra/jenkins-job-builder/tree/master/tests) is another useful resource of sample definitions.
