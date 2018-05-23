@@ -59,7 +59,7 @@
     builders:
       # Setting BUILD_ID for the vagrant process to make sure the Jenkins process tree killer
       # doesn't kill the VM before the next job is started.
-      - shell: BUILD_ID=gpii-linux DISPLAY=:0 vagrant up --provider virtualbox && npm install
+      - shell: BUILD_ID=gpii-linux DISPLAY=:0 vagrant up --provider virtualbox
 
 - job:
     name: linux-code-analysis
@@ -67,7 +67,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: grunt lint
+      - shell: vagrant ssh -c 'cd /home/vagrant/sync; $(npm bin)/grunt lint'
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -78,7 +78,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: grunt unit-tests
+      - shell: npm run test:vagrantUnit
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -89,7 +89,7 @@
     node: h-0005.tor1.inclusivedesign.ca
     workspace: $parent_workspace
     builders:
-      - shell: grunt acceptance-tests
+      - shell: npm run test:vagrantAcceptance
     publishers:
       - email:
           recipients: ci@lists.gpii.net
