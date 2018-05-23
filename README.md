@@ -2,7 +2,7 @@
 
 The [GPII Continuous Integration server](https://ci.gpii.net/) uses [Jenkins Job Builder](http://docs.openstack.org/infra/jenkins-job-builder) definitions located in the ``jenkins_jobs`` directory of this repository to generate its configuration. This allows CI server jobs to be maintained transparently using version control instead of having to rely on the Jenkins UI. 
 
-The CI server is deployed on a CentOS VM. It delegates the majority of job tasks to physical hosts so that job performance issues don't affect the Jenkins process and also because certain jobs require VMs that can provide windowing environments. One exception is the ``update-jenkins-job-definitions`` job which runs on the CI server itself. This job should not be removed.
+The CI server is deployed on a CentOS VM. It delegates the majority of job tasks to physical hosts so that job performance issues don't affect the Jenkins process and also because certain jobs require VMs that can provide windowing environments. One exception is the ``update-jenkins-job-definitions`` job which runs on the CI server itself. This job should not be removed. The execution of the [update-jenkins-job-definitions job](https://ci.gpii.net/view/All/job/update-jenkins-job-definitions/) can be checked as a usual build.
 
 The remaining definitions in the ``jenkins_jobs`` directory are what the GPII build jobs use:
 
@@ -11,7 +11,6 @@ The remaining definitions in the ``jenkins_jobs`` directory are what the GPII bu
 * ``universal.yml`` - job defintion for the [GPII Universal](https://github.com/gpii/universal/) project
 * ``windows.yml`` - job defintion for the [GPII Windows Framework](https://github.com/gpii/windows/) project
 
-The changes made in this repository are applied using the [update-jenkins-job-definitions job](https://ci.gpii.net/view/All/job/update-jenkins-job-definitions/)
 
 ## How CI Jobs Get Triggered
 
