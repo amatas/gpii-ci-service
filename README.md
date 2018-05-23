@@ -42,6 +42,6 @@ The CI server uses the [gpii-bot](https://github.com/gpii-bot) account to post P
 
 ## Where can I find help about how to define jobs
 
-The first place to look at is the [Jenkins Job Builder documentation](http://docs.openstack.org/infra/jenkins-job-builder) which use to be updated.
+The first place to look at is the [Jenkins Job Builder documentation](http://docs.openstack.org/infra/jenkins-job-builder).
 
 The [fixtures directory](https://github.com/openstack-infra/jenkins-job-builder/tree/master/tests/builders/fixtures) which can be found in each [JJB module tests](https://github.com/openstack-infra/jenkins-job-builder/tree/master/tests) is another useful resource of sample definitions.
