@@ -4,6 +4,8 @@
         - '{idirole}':
             idirole: ansible-ansible
         - '{idirole}':
+            idirole: ansible-docker-ce
+        - '{idirole}':
             idirole: ansible-nginx-common
 
 - job-template:
