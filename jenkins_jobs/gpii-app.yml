@@ -41,7 +41,7 @@
               predefined-parameters: parent_workspace=$WORKSPACE
     publishers:
       - archive:
-          artifacts: "reports/**, coverage/**"
+          artifacts: "reports/**, coverage/**, installer/**"
           allow-empty: true
           only-if-success: true
 
