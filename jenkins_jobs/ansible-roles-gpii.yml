@@ -21,7 +21,7 @@
             cron: "H/5 * * * *"
         - timed: '@daily'
 
-    node: h-0005.tor1.inclusivedesign.ca
+    node: h-0005.tor1.incd.ca
     builders:
         # Several things going on here:
         #
@@ -32,7 +32,7 @@
         # its own step. We nudge it up from the CentOS 7 default to be
         # minimally opinionated about which version gets installed.
         #
-        # - /tmp on Jenkins node h-0005.tor1.inclusivedesign.ca is mounted
+        # - /tmp on Jenkins node h-0005.tor1.incd.ca is mounted
         # noexec, which prevents pycyrpto (in requirements.txt) from running
         # autoconf (see https://bugs.launchpad.net/pycrypto/+bug/1294670). So
         # we make a local tmpdir and use it when installing from
