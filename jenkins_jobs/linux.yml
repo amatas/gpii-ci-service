@@ -2,7 +2,7 @@
     name: linux-tests
     description: 'Main Jenkins job responsible for orchestrating tasks required to run GPII Linux Framework tests'
     project-type: multijob
-    node: h-0005.tor1.inclusivedesign.ca
+    node: h-0005.tor1.incd.ca
     properties:
       # Required by the GitHub PR builder plugin.
       - github:
@@ -54,7 +54,7 @@
 - job:
     name: linux-create-vm
     description: 'Job responsible for creating a test VM'
-    node: h-0005.tor1.inclusivedesign.ca
+    node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
       # Setting BUILD_ID for the vagrant process to make sure the Jenkins process tree killer
@@ -64,7 +64,7 @@
 - job:
     name: linux-code-analysis
     description: 'GPII Linux code analysis'
-    node: h-0005.tor1.inclusivedesign.ca
+    node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
       - shell: vagrant ssh -c 'cd /home/vagrant/sync; $(npm bin)/grunt lint'
@@ -75,7 +75,7 @@
 - job:
     name: linux-unit-tests
     description: 'GPII Linux unit tests'
-    node: h-0005.tor1.inclusivedesign.ca
+    node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
       - shell: npm run test:vagrantUnit
@@ -86,7 +86,7 @@
 - job:
     name: linux-acceptance-tests
     description: 'GPII Linux acceptance tests'
-    node: h-0005.tor1.inclusivedesign.ca
+    node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
       - shell: npm run test:vagrantAcceptance
@@ -97,7 +97,7 @@
 - job:
     name: linux-delete-vm
     description: 'Job responsible for deleting the test VM'
-    node: h-0005.tor1.inclusivedesign.ca
+    node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
       - shell: vagrant destroy -f
