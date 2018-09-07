@@ -33,18 +33,12 @@
           projects:
             - name: nexus-unit-tests
               predefined-parameters: parent_workspace=$WORKSPACE
-    publishers:
-      - postbuildscript:
-          builders:
-            - role: SLAVE
-              build-on:
-                - NOT_BUILT
-                - ABORTED
-                - FAILURE
-                - SUCCESS
-                - UNSTABLE
-              build-steps:
-                - shell: vagrant halt -f && sleep 5 && vagrant destroy -f
+      - multijob:
+          name: nexus-delete-vm
+          condition: SUCCESSFUL
+          projects:
+            - name: nexus-delete-vm
+              predefined-parameters: parent_workspace=$WORKSPACE
 
 - job:
     name: nexus-create-vm
@@ -80,3 +74,11 @@
     publishers:
       - email:
           recipients: ci@lists.gpii.net
+
+- job:
+    name: nexus-delete-vm
+    description: 'Job responsible for deleting the test VM'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: vagrant halt -f && sleep 5 && vagrant destroy -f
