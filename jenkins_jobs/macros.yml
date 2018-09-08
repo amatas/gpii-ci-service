@@ -10,8 +10,6 @@
             - avtar
             - cindyli
             - colinbdclark
-            - gloob
-            - gtirloni
             - javihernandez
             - kaspermarkus
             - klown
@@ -22,13 +20,12 @@
             - the-t-in-rtf
             - waharnum
             - yzen
+            - JavierJF
           # Whitelist the following users so that their PRs automatically trigger jobs.
           white-list:
             - amatas
             - avtar
             - bsheytanov
-            - gloob
-            - gtirloni
             - klown
             - localduke
             - michelled
