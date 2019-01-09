@@ -102,6 +102,8 @@
             - '{git_app_branch}'
     triggers:
       - github
+      - pollscm:
+          cron: "*/15 * * * *"
     builders:
       - multijob:
           name: Cleanup
