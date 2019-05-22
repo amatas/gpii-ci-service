@@ -138,7 +138,7 @@
     workspace: $parent_workspace
     builders:
       - shell: |
-          docker rmi -f {docker_username}/{docker_image}:$BUILD_ID || echo "docker rmi failed. image probably does not exist"
+          # See 'release' job for cleanup of $TIMESTAMP tag.
           docker rmi -f {docker_username}/{docker_image}:{docker_tag} || echo "docker rmi failed. image probably does not exist"
 
 - job-template:
@@ -149,8 +149,10 @@
     workspace: $parent_workspace
     builders:
       - shell: |
-          docker build --pull -t {docker_username}/{docker_image}:$BUILD_ID .
-          docker tag {docker_username}/{docker_image}:$BUILD_ID {docker_username}/{docker_image}:{docker_tag}
+          date -u '+%Y%m%d%H%M%S' > timestamp.env
+          TIMESTAMP=$(cat timestamp.env)
+          docker build --pull -t {docker_username}/{docker_image}:$TIMESTAMP .
+          docker tag {docker_username}/{docker_image}:$TIMESTAMP {docker_username}/{docker_image}:{docker_tag}
 
 #- job-template:
 #    defaults: gpii-universal
@@ -159,7 +161,7 @@
 #    node: '{jenkins_node}'
 #    workspace: $parent_workspace
 #    builders:
-#      - shell: docker run --rm -i {docker_username}/{docker_image}:$BUILD_ID node --eval "console.log('OK');"
+#      - shell: docker run --rm -i {docker_username}/{docker_image}:$TIMESTAMP node --eval "console.log('OK');"
 
 # Tag operation is forced in case they've happened in the past from a previous build (no-op)
 # Push is forced otherwise a prompt is displayed asking if really want to publish to public registry
@@ -174,6 +176,11 @@
     builders:
       - critical-block-start
       - shell: |
-          docker push {docker_username}/{docker_image}:$BUILD_ID
+          TIMESTAMP=$(cat timestamp.env)
+          docker push {docker_username}/{docker_image}:$TIMESTAMP
+          # This can't run in the cleanup step because cleanup runs at the start
+          # of the next build (with a different tag). So we cleanup here after
+          # pushing. The {docker_tag} image will stick around for debugging.
+          docker rmi -f {docker_username}/{docker_image}:$TIMESTAMP || echo "docker rmi failed. image probably does not exist"
           docker push {docker_username}/{docker_image}:{docker_tag}
       - critical-block-end
