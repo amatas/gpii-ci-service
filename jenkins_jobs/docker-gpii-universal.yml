@@ -203,5 +203,5 @@
           # of the next build (with a different calculated tag). So we cleanup
           # here after pushing. The {docker_tag} image is available for
           # debugging until the next build runs and cleans up.
-          [ -n "$CALCULATED_TAG" ] && docker rmi -f "{docker_username}/{docker_image}:$CALCULATED_TAG" || echo "docker rmi failed. image probably does not exist"
+          [ -n "$CALCULATED_TAG" ] && (docker rmi -f "{docker_username}/{docker_image}:$CALCULATED_TAG" || echo "docker rmi failed. image probably does not exist")
       - critical-block-end
