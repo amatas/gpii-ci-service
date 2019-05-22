@@ -150,9 +150,11 @@
     builders:
       - shell: |
           date -u '+%Y%m%d%H%M%S' > timestamp.env
-          TIMESTAMP=$(cat timestamp.env)
-          docker build --pull -t {docker_username}/{docker_image}:$TIMESTAMP .
-          docker tag {docker_username}/{docker_image}:$TIMESTAMP {docker_username}/{docker_image}:{docker_tag}
+          git rev-parse --short HEAD > git_rev.env
+          TIMESTAMP=$(cat timestamp.env || echo "no_timestamp")
+          GIT_REV=$(cat git_rev.env || echo "no_git_rev")
+          docker build --pull -t {docker_username}/{docker_image}:${TIMESTAMP}_${GIT_REV} .
+          docker tag {docker_username}/{docker_image}:${TIMESTAMP}_${GIT_REV} {docker_username}/{docker_image}:{docker_tag}
 
 #- job-template:
 #    defaults: gpii-universal
@@ -176,11 +178,12 @@
     builders:
       - critical-block-start
       - shell: |
-          TIMESTAMP=$(cat timestamp.env)
-          docker push {docker_username}/{docker_image}:$TIMESTAMP
+          TIMESTAMP=$(cat timestamp.env || echo "no_timestamp")
+          GIT_REV=$(cat git_rev.env || echo "no_git_rev")
+          docker push {docker_username}/{docker_image}:${TIMESTAMP}_${GIT_REV}
           # This can't run in the cleanup step because cleanup runs at the start
           # of the next build (with a different tag). So we cleanup here after
           # pushing. The {docker_tag} image will stick around for debugging.
-          docker rmi -f {docker_username}/{docker_image}:$TIMESTAMP || echo "docker rmi failed. image probably does not exist"
+          docker rmi -f {docker_username}/{docker_image}:${TIMESTAMP}_${GIT_REV} || echo "docker rmi failed. image probably does not exist"
           docker push {docker_username}/{docker_image}:{docker_tag}
       - critical-block-end
