@@ -137,7 +137,9 @@
     node: '{jenkins_node}'
     workspace: $parent_workspace
     builders:
-      - shell: docker rmi -f {docker_username}/{docker_image}:{docker_tag} || echo "docker rmi failed. image probably does not exist"
+      - shell: |
+          docker rmi -f {docker_username}/{docker_image}:$BUILD_ID || echo "docker rmi failed. image probably does not exist"
+          docker rmi -f {docker_username}/{docker_image}:{docker_tag} || echo "docker rmi failed. image probably does not exist"
 
 - job-template:
     defaults: gpii-universal
@@ -146,7 +148,9 @@
     node: '{jenkins_node}'
     workspace: $parent_workspace
     builders:
-      - shell: docker build --pull -t {docker_username}/{docker_image}:{docker_tag} .
+      - shell: |
+          docker build --pull -t {docker_username}/{docker_image}:$BUILD_ID .
+          docker tag {docker_username}/{docker_image}:$BUILD_ID {docker_username}/{docker_image}:{docker_tag}
 
 #- job-template:
 #    defaults: gpii-universal
@@ -155,7 +159,7 @@
 #    node: '{jenkins_node}'
 #    workspace: $parent_workspace
 #    builders:
-#      - shell: docker run --rm -i {docker_username}/{docker_image}:{docker_tag} node --eval "console.log('OK');"
+#      - shell: docker run --rm -i {docker_username}/{docker_image}:$BUILD_ID node --eval "console.log('OK');"
 
 # Tag operation is forced in case they've happened in the past from a previous build (no-op)
 # Push is forced otherwise a prompt is displayed asking if really want to publish to public registry
@@ -169,5 +173,7 @@
       - gpii-universal-docker-push
     builders:
       - critical-block-start
-      - shell: docker push {docker_username}/{docker_image}:{docker_tag}
+      - shell: |
+          docker push {docker_username}/{docker_image}:$BUILD_ID
+          docker push {docker_username}/{docker_image}:{docker_tag}
       - critical-block-end
