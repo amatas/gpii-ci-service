@@ -66,6 +66,7 @@
     name: 'docker-gpii-universal-all'
     jobs:
       - 'docker-gpii-universal-{jenkins_tag}'
+      - 'docker-gpii-universal-{jenkins_tag}-calculate-tag'
       - 'docker-gpii-universal-{jenkins_tag}-build'
 #      - 'docker-gpii-universal-{jenkins_tag}-test'
       - 'docker-gpii-universal-{jenkins_tag}-release'
@@ -112,6 +113,12 @@
             - name: docker-gpii-universal-{jenkins_tag}-cleanup
               predefined-parameters: parent_workspace=$WORKSPACE/docker
       - multijob:
+          name: Calculate Tag
+          condition: SUCCESSFUL
+          projects:
+            - name: docker-gpii-universal-{jenkins_tag}-calculate-tag
+              predefined-parameters: parent_workspace=$WORKSPACE/docker
+      - multijob:
           name: Build
           condition: SUCCESSFUL
           projects:
@@ -138,8 +145,22 @@
     workspace: $parent_workspace
     builders:
       - shell: |
-          # See 'release' job for cleanup of $TIMESTAMP tag.
+          # See 'release' job for cleanup of image tagged with $CALCULATED_TAG.
           docker rmi -f "{docker_username}/{docker_image}:{docker_tag}" || echo "docker rmi failed. image probably does not exist"
+
+- job-template:
+    defaults: gpii-universal
+    name: 'docker-gpii-universal-{jenkins_tag}-calculate-tag'
+    description: 'Calculate a "static" tag to use in addition to "{docker_tag}". Write it to a file for use in later jobs.'
+    node: '{jenkins_node}'
+    workspace: $parent_workspace
+    builders:
+      - shell: |
+          TIMESTAMP="$(date -u '+%Y%m%d%H%M%S')"
+          GITREV="$(git rev-parse --short HEAD || echo 'no_gitrev')"
+          # FYI, JJB doesn't like dollar-curly format.
+          CALCULATED_TAG="$TIMESTAMP-$GITREV"
+          echo "$CALCULATED_TAG" > calculated_tag.env
 
 - job-template:
     defaults: gpii-universal
@@ -149,12 +170,9 @@
     workspace: $parent_workspace
     builders:
       - shell: |
-          date -u '+%Y%m%d%H%M%S' > timestamp.env
-          git rev-parse --short HEAD > git_rev.env
-          TIMESTAMP="$(cat timestamp.env 2>/dev/null || echo 'no_timestamp')"
-          GITREV="$(cat git_rev.env 2>/dev/null || echo 'no_git_rev')"
-          docker build --pull -t "{docker_username}/{docker_image}:$TIMESTAMP_$GITREV" .
-          docker tag "{docker_username}/{docker_image}:$TIMESTAMP_$GITREV" "{docker_username}/{docker_image}:{docker_tag}"
+          docker build --pull -t "{docker_username}/{docker_image}:{docker_tag}" .
+          CALCULATED_TAG="$(cat calculated_tag.env 2>/dev/null)"
+          [ -n "$CALCULATED_TAG" ] && docker tag "{docker_username}/{docker_image}:{docker_tag}" "{docker_username}/{docker_image}:$CALCULATED_TAG"
 
 #- job-template:
 #    defaults: gpii-universal
@@ -178,12 +196,12 @@
     builders:
       - critical-block-start
       - shell: |
-          TIMESTAMP="$(cat timestamp.env 2>/dev/null || echo 'no_timestamp')"
-          GITREV="$(cat git_rev.env 2>/dev/null || echo 'no_git_rev')"
-          docker push "{docker_username}/{docker_image}:$TIMESTAMP_$GITREV"
-          # This can't run in the cleanup step because cleanup runs at the start
-          # of the next build (with a different tag). So we cleanup here after
-          # pushing. The {docker_tag} image will stick around for debugging.
-          docker rmi -f "{docker_username}/{docker_image}:$TIMESTAMP_$GITREV" || echo "docker rmi failed. image probably does not exist"
           docker push "{docker_username}/{docker_image}:{docker_tag}"
+          CALCULATED_TAG="$(cat calculated_tag.env 2>/dev/null)"
+          [ -n "$CALCULATED_TAG" ] && docker push "{docker_username}/{docker_image}:$CALCULATED_TAG"
+          # This can't run in the cleanup step because cleanup runs at the start
+          # of the next build (with a different calculated tag). So we cleanup
+          # here after pushing. The {docker_tag} image is available for
+          # debugging until the next build runs and cleans up.
+          [ -n "$CALCULATED_TAG" ] && docker rmi -f "{docker_username}/{docker_image}:$CALCULATED_TAG" || echo "docker rmi failed. image probably does not exist"
       - critical-block-end
