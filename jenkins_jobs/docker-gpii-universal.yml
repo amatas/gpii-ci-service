@@ -204,4 +204,7 @@
           # here after pushing. The {docker_tag} image is available for
           # debugging until the next build runs and cleans up.
           [ -n "$CALCULATED_TAG" ] && (docker rmi -f "{docker_username}/{docker_image}:$CALCULATED_TAG" || echo "docker rmi failed. image probably does not exist")
+          # The above check returns non-zero when $CALCULATED_TAG is empty,
+          # which fails the build, which is not what we want.
+          true
       - critical-block-end
