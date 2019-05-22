@@ -139,7 +139,7 @@
     builders:
       - shell: |
           # See 'release' job for cleanup of $TIMESTAMP tag.
-          docker rmi -f {docker_username}/{docker_image}:{docker_tag} || echo "docker rmi failed. image probably does not exist"
+          docker rmi -f "{docker_username}/{docker_image}:{docker_tag}" || echo "docker rmi failed. image probably does not exist"
 
 - job-template:
     defaults: gpii-universal
@@ -151,10 +151,10 @@
       - shell: |
           date -u '+%Y%m%d%H%M%S' > timestamp.env
           git rev-parse --short HEAD > git_rev.env
-          TIMESTAMP=$(cat timestamp.env || echo "no_timestamp")
-          GIT_REV=$(cat git_rev.env || echo "no_git_rev")
-          docker build --pull -t {docker_username}/{docker_image}:${TIMESTAMP}_${GIT_REV} .
-          docker tag {docker_username}/{docker_image}:${TIMESTAMP}_${GIT_REV} {docker_username}/{docker_image}:{docker_tag}
+          TIMESTAMP="$(cat timestamp.env 2>/dev/null || echo 'no_timestamp')"
+          GIT_REV="$(cat git_rev.env 2>/dev/null || echo 'no_git_rev')"
+          docker build --pull -t "{docker_username}/{docker_image}:${TIMESTAMP}_${GIT_REV}" .
+          docker tag "{docker_username}/{docker_image}:${TIMESTAMP}_${GIT_REV}" "{docker_username}/{docker_image}:{docker_tag}"
 
 #- job-template:
 #    defaults: gpii-universal
@@ -178,12 +178,12 @@
     builders:
       - critical-block-start
       - shell: |
-          TIMESTAMP=$(cat timestamp.env || echo "no_timestamp")
-          GIT_REV=$(cat git_rev.env || echo "no_git_rev")
-          docker push {docker_username}/{docker_image}:${TIMESTAMP}_${GIT_REV}
+          TIMESTAMP="$(cat timestamp.env 2>/dev/null || echo 'no_timestamp')"
+          GIT_REV="$(cat git_rev.env 2>/dev/null || echo 'no_git_rev')"
+          docker push "{docker_username}/{docker_image}:${TIMESTAMP}_${GIT_REV}"
           # This can't run in the cleanup step because cleanup runs at the start
           # of the next build (with a different tag). So we cleanup here after
           # pushing. The {docker_tag} image will stick around for debugging.
-          docker rmi -f {docker_username}/{docker_image}:${TIMESTAMP}_${GIT_REV} || echo "docker rmi failed. image probably does not exist"
-          docker push {docker_username}/{docker_image}:{docker_tag}
+          docker rmi -f "{docker_username}/{docker_image}:${TIMESTAMP}_${GIT_REV}" || echo "docker rmi failed. image probably does not exist"
+          docker push "{docker_username}/{docker_image}:{docker_tag}"
       - critical-block-end
