@@ -171,7 +171,7 @@
     builders:
       - shell: |
           docker build --pull -t "{docker_username}/{docker_image}:{docker_tag}" .
-          CALCULATED_TAG="$(cat calculated_tag.env 2>/dev/null)"
+          CALCULATED_TAG="$(cat calculated_tag.env 2>/dev/null || echo '')"
           [ -n "$CALCULATED_TAG" ] && docker tag "{docker_username}/{docker_image}:{docker_tag}" "{docker_username}/{docker_image}:$CALCULATED_TAG"
 
 #- job-template:
@@ -197,7 +197,7 @@
       - critical-block-start
       - shell: |
           docker push "{docker_username}/{docker_image}:{docker_tag}"
-          CALCULATED_TAG="$(cat calculated_tag.env 2>/dev/null)"
+          CALCULATED_TAG="$(cat calculated_tag.env 2>/dev/null || echo '')"
           [ -n "$CALCULATED_TAG" ] && docker push "{docker_username}/{docker_image}:$CALCULATED_TAG"
           # This can't run in the cleanup step because cleanup runs at the start
           # of the next build (with a different calculated tag). So we cleanup
