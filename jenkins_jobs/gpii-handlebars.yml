@@ -1,0 +1,86 @@
+- job:
+    name: gpii-handlebars-tests
+    description: 'Main Jenkins job responsible for orchestrating tasks required to run gpii-handlebars tests.'
+    project-type: multijob
+    node: h-0005.tor1.incd.ca
+    properties:
+      # Required by the GitHub PR builder plugin.
+      - github:
+          url: https://github.com/GPII/gpii-handlebars/
+    triggers:
+      - gh-pr-builder
+    scm:
+      - gh-pr-scm
+    builders:
+      # Each parent multijob builder passes the Jenkins WORKSPACE environment
+      # variable to its child job as a parameter so that a common Git working
+      # directory can be used.
+      - multijob:
+          name: gpii-handlebars-create-vm
+          condition: COMPLETED
+          projects:
+            - name: gpii-handlebars-create-vm
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: gpii-handlebars-all-tests
+          condition: COMPLETED
+          projects:
+            - name: gpii-handlebars-all-tests
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: gpii-handlebars-linting
+          condition: COMPLETED
+          projects:
+            - name: gpii-handlebars-linting
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: gpii-handlebars-delete-vm
+          condition: SUCCESSFUL
+          projects:
+            - name: gpii-handlebars-delete-vm
+              predefined-parameters: parent_workspace=$WORKSPACE
+    publishers:
+      - archive:
+          artifacts: "reports/**, coverage/**"
+          allow-empty: true
+          only-if-success: true
+
+- job:
+    name: gpii-handlebars-create-vm
+    description: 'Create a test VM.'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      # Setting BUILD_ID for vagrant to make sure Jenkins process tree killer doesn't kill the VM
+      # before the next job is started
+      - shell: DISPLAY=:0 BUILD_ID=gpii-handlebars vagrant up --provider virtualbox
+
+- job:
+    name: gpii-handlebars-all-tests
+    description: 'Run all gpii-handlebars tests.'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: DISPLAY=:0 BUILD_ID=gpii-handlebars vagrant ci test --provider virtualbox
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
+
+- job:
+    name: gpii-handlebars-linting
+    description: 'Run gpii-handlebars linting checks.'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: vagrant winrm -c "do.ps1 -c 'grunt lint'"
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
+
+- job:
+    name: gpii-handlebars-delete-vm
+    description: 'Delete the test VM.'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: vagrant halt -f && sleep 5 && vagrant destroy -f
