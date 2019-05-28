@@ -22,10 +22,10 @@
             - name: gpii-json-schema-create-vm
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
-          name: gpii-json-schema-tests
+          name: gpii-json-schema-all-tests
           condition: COMPLETED
           projects:
-            - name: gpii-json-schema-tests
+            - name: gpii-json-schema-all-tests
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
           name: gpii-json-schema-linting
@@ -56,7 +56,7 @@
       - shell: DISPLAY=:0 BUILD_ID=gpii-json-schema vagrant up --provider virtualbox
 
 - job:
-    name: gpii-json-schema-tests
+    name: gpii-json-schema-all-tests
     description: 'Run all gpii-json-schema tests.'
     node: h-0005.tor1.incd.ca
     workspace: $parent_workspace

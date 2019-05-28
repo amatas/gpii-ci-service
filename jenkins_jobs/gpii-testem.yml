@@ -22,10 +22,10 @@
             - name: gpii-testem-create-vm
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
-          name: gpii-testem-tests
+          name: gpii-testem-all-tests
           condition: COMPLETED
           projects:
-            - name: gpii-testem-tests
+            - name: gpii-testem-all-tests
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
           name: gpii-testem-linting
@@ -56,7 +56,7 @@
       - shell: DISPLAY=:0 BUILD_ID=gpii-testem vagrant up --provider virtualbox
 
 - job:
-    name: gpii-testem-tests
+    name: gpii-testem-all-tests
     description: 'Run all gpii-testem tests.'
     node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
