@@ -53,6 +53,7 @@
           only-if-success: true
 
 - job:
+<<<<<<< HEAD
     name: gpii-testem-confirm-plugin
     description: 'Confirm Vagrant CI Plugin is available.'
     node: h-0005.tor1.incd.ca
@@ -61,6 +62,8 @@
      - shell: DISPLAY=:0 vagrant ci help
 
 - job:
+=======
+>>>>>>> upstream/master
     name: gpii-testem-create-vm
     description: 'Create a test VM.'
     node: h-0005.tor1.incd.ca
