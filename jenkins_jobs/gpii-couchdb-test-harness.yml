@@ -1,0 +1,89 @@
+- job:
+    name: gpii-couchdb-test-harness-tests
+    description: 'Main Jenkins job responsible for orchestrating tasks required to run gpii-couchdb-test-harness tests'
+    project-type: multijob
+    node: h-0005.tor1.incd.ca
+    properties:
+      # Required by the GitHub PR builder plugin.
+      - github:
+          url: https://github.com/GPII/gpii-couchdb-test-harness/
+    triggers:
+      - gh-pr-builder
+    scm:
+      - gh-pr-scm
+    wrappers:
+      - timeout:
+          # Abort after these many minutes
+          timeout: 120
+          # Mark the build as failed
+          fail: true
+    builders:
+      # Each parent multijob builder passes the Jenkins WORKSPACE environment
+      # variable to its child job as a parameter so that a common Git working
+      # directory can be used.
+      - multijob:
+          name: create-gpii-couchdb-test-harness-vm
+          condition: COMPLETED
+          projects:
+            - name: create-gpii-couchdb-test-harness-vm
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: gpii-couchdb-test-harness-test
+          condition: COMPLETED
+          projects:
+            - name: gpii-couchdb-test-harness-test
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: delete-gpii-couchdb-test-harness-vm
+          condition: SUCCESSFUL
+          projects:
+            - name: delete-gpii-couchdb-test-harness-vm
+              predefined-parameters: parent_workspace=$WORKSPACE
+    publishers:
+      - archive:
+          artifacts: "reports/**, coverage/**"
+          allow-empty: true
+          only-if-success: true
+
+- job:
+    name: create-gpii-couchdb-test-harness-vm
+    description: 'Job responsible for creating a test VM'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      # Setting BUILD_ID for vagrant to make sure Jenkins process tree killer doesn't kill the VM
+      # before the next job is started
+      - shell: DISPLAY=:0 BUILD_ID=gpii-couchdb-test-harness vagrant up linux --provider virtualbox
+    wrappers:
+      - timeout:
+          # Abort after these many minutes
+          timeout: 60
+          # Mark the build as failed
+          fail: true
+
+
+- job:
+    name: gpii-couchdb-test-harness-test
+    description: 'gpii-couchdb-test-harness tests'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: DISPLAY=:0 BUILD_ID=gpii-binder vagrant ci test linux
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
+    wrappers:
+      - timeout:
+          # Abort after these many minutes
+          timeout: 60
+          # Mark the build as failed
+          fail: true
+
+
+- job:
+    name: delete-gpii-couchdb-test-harness-vm
+    description: 'Job responsible for deleting the test VM'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: vagrant halt -f && sleep 5 && vagrant destroy -f
