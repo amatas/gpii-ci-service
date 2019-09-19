@@ -1,12 +1,16 @@
+# TODO: Convert this to a template and standardise all projects that use the GPII Vagrant CI plugins.
+- defaults:
+    name: "gpii-webdriver"
+    repo: "https://github.com/GPII/{name}/"
 - job:
-    name: gpii-couchdb-test-harness-tests
-    description: 'Main Jenkins job responsible for orchestrating tasks required to run gpii-couchdb-test-harness tests'
+    name: "{name}-tests"
+    description: 'Main Jenkins job responsible for orchestrating tasks required to run {name} tests'
     project-type: multijob
     node: h-0005.tor1.incd.ca
     properties:
       # Required by the GitHub PR builder plugin.
       - github:
-          url: https://github.com/GPII/gpii-couchdb-test-harness/
+          url: "{repo}"
     triggers:
       - gh-pr-builder
     scm:
@@ -22,22 +26,22 @@
       # variable to its child job as a parameter so that a common Git working
       # directory can be used.
       - multijob:
-          name: create-gpii-couchdb-test-harness-vm
+          name: "create-{name}-vm"
           condition: COMPLETED
           projects:
-            - name: create-gpii-couchdb-test-harness-vm
+            - name: "create-{name}-vm"
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
-          name: gpii-couchdb-test-harness-test
+          name: "{name}-test"
           condition: COMPLETED
           projects:
-            - name: gpii-couchdb-test-harness-test
+            - name: "{name}-test"
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
-          name: delete-gpii-couchdb-test-harness-vm
+          name: "delete-{name}-vm"
           condition: SUCCESSFUL
           projects:
-            - name: delete-gpii-couchdb-test-harness-vm
+            - name: delete-{name}-vm
               predefined-parameters: parent_workspace=$WORKSPACE
     publishers:
       - archive:
@@ -46,14 +50,14 @@
           only-if-success: true
 
 - job:
-    name: create-gpii-couchdb-test-harness-vm
-    description: 'Job responsible for creating a test VM'
+    name: "create-{name}-vm"
+    description: 'Job responsible for creating a {name} test VM'
     node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
       # Setting BUILD_ID for vagrant to make sure Jenkins process tree killer doesn't kill the VM
       # before the next job is started
-      - shell: DISPLAY=:0 BUILD_ID=gpii-couchdb-test-harness vagrant up linux --provider virtualbox
+      - shell: "DISPLAY=:0 BUILD_ID={name} vagrant up {platform} --provider virtualbox"
     wrappers:
       - timeout:
           # Abort after these many minutes
@@ -63,12 +67,12 @@
 
 
 - job:
-    name: gpii-couchdb-test-harness-test
-    description: 'gpii-couchdb-test-harness tests'
+    name: "{name}-test"
+    description: '{name} tests'
     node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
-      - shell: DISPLAY=:0 BUILD_ID=gpii-couchdb-test-harness vagrant ci test linux
+      - shell: "DISPLAY=:0 BUILD_ID={name} vagrant ci test {platform}"
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -81,8 +85,8 @@
 
 
 - job:
-    name: delete-gpii-couchdb-test-harness-vm
-    description: 'Job responsible for deleting the test VM'
+    name: "delete-{name}-vm"
+    description: 'Job responsible for deleting the {name} test VM'
     node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
