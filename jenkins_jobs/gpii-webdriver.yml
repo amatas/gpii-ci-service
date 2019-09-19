@@ -1,0 +1,93 @@
+# TODO: Convert this to a template and standardise all projects that use the GPII Vagrant CI plugins.
+- defaults:
+    name: "gpii-webdriver"
+    repo: "https://github.com/GPII/{name}/"
+- job:
+    name: "{name}-tests"
+    description: 'Main Jenkins job responsible for orchestrating tasks required to run {name} tests'
+    project-type: multijob
+    node: h-0005.tor1.incd.ca
+    properties:
+      # Required by the GitHub PR builder plugin.
+      - github:
+          url: "{repo}"
+    triggers:
+      - gh-pr-builder
+    scm:
+      - gh-pr-scm
+    wrappers:
+      - timeout:
+          # Abort after these many minutes
+          timeout: 120
+          # Mark the build as failed
+          fail: true
+    builders:
+      # Each parent multijob builder passes the Jenkins WORKSPACE environment
+      # variable to its child job as a parameter so that a common Git working
+      # directory can be used.
+      - multijob:
+          name: "create-{name}-vm"
+          condition: COMPLETED
+          projects:
+            - name: "create-{name}-vm"
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: "{name}-test"
+          condition: COMPLETED
+          projects:
+            - name: "{name}-test"
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: "delete-{name}-vm"
+          condition: SUCCESSFUL
+          projects:
+            - name: delete-{name}-vm
+              predefined-parameters: parent_workspace=$WORKSPACE
+    publishers:
+      - archive:
+          artifacts: "reports/**, coverage/**"
+          allow-empty: true
+          only-if-success: true
+
+- job:
+    name: "create-{name}-vm"
+    description: 'Job responsible for creating a {name} test VM'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      # Setting BUILD_ID for vagrant to make sure Jenkins process tree killer doesn't kill the VM
+      # before the next job is started
+      - shell: "DISPLAY=:0 BUILD_ID={name} vagrant up {platform} --provider virtualbox"
+    wrappers:
+      - timeout:
+          # Abort after these many minutes
+          timeout: 60
+          # Mark the build as failed
+          fail: true
+
+
+- job:
+    name: "{name}-test"
+    description: '{name} tests'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: "DISPLAY=:0 BUILD_ID={name} vagrant ci test {platform}"
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
+    wrappers:
+      - timeout:
+          # Abort after these many minutes
+          timeout: 60
+          # Mark the build as failed
+          fail: true
+
+
+- job:
+    name: "delete-{name}-vm"
+    description: 'Job responsible for deleting the {name} test VM'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: vagrant halt -f && sleep 5 && vagrant destroy -f
