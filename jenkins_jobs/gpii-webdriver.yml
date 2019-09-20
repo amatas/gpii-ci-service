@@ -1,16 +1,13 @@
 # TODO: Convert this to a template and standardise all projects that use the GPII Vagrant CI plugins.
-- defaults:
-    name: "gpii-webdriver"
-    repo: "https://github.com/GPII/{name}/"
 - job:
-    name: "{name}-tests"
-    description: 'Main Jenkins job responsible for orchestrating tasks required to run {name} tests'
+    name: "gpii-webdriver-tests"
+    description: 'Main Jenkins job responsible for orchestrating tasks required to run gpii-webdriver tests'
     project-type: multijob
     node: h-0005.tor1.incd.ca
     properties:
       # Required by the GitHub PR builder plugin.
       - github:
-          url: "{repo}"
+      url: "https://github.com/GPII/gpii-webdriver/"
     triggers:
       - gh-pr-builder
     scm:
@@ -26,22 +23,22 @@
       # variable to its child job as a parameter so that a common Git working
       # directory can be used.
       - multijob:
-          name: "create-{name}-vm"
+          name: "create-gpii-webdriver-vm"
           condition: COMPLETED
           projects:
-            - name: "create-{name}-vm"
+            - name: "create-gpii-webdriver-vm"
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
-          name: "{name}-test"
+          name: "gpii-webdriver-test"
           condition: COMPLETED
           projects:
-            - name: "{name}-test"
+            - name: "gpii-webdriver-test"
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
-          name: "delete-{name}-vm"
+          name: "delete-gpii-webdriver-vm"
           condition: SUCCESSFUL
           projects:
-            - name: delete-{name}-vm
+            - name: delete-gpii-webdriver-vm
               predefined-parameters: parent_workspace=$WORKSPACE
     publishers:
       - archive:
@@ -50,14 +47,14 @@
           only-if-success: true
 
 - job:
-    name: "create-{name}-vm"
-    description: 'Job responsible for creating a {name} test VM'
+    name: "create-gpii-webdriver-vm"
+    description: 'Job responsible for creating a gpii-webdriver test VM'
     node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
       # Setting BUILD_ID for vagrant to make sure Jenkins process tree killer doesn't kill the VM
       # before the next job is started
-      - shell: "DISPLAY=:0 BUILD_ID={name} vagrant up {platform} --provider virtualbox"
+      - shell: "DISPLAY=:0 BUILD_ID=gpii-webdriver vagrant up --provider virtualbox"
     wrappers:
       - timeout:
           # Abort after these many minutes
@@ -67,12 +64,12 @@
 
 
 - job:
-    name: "{name}-test"
-    description: '{name} tests'
+    name: "gpii-webdriver-test"
+    description: 'gpii-webdriver tests'
     node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
-      - shell: "DISPLAY=:0 BUILD_ID={name} vagrant ci test {platform}"
+      - shell: "DISPLAY=:0 BUILD_ID=gpii-webdriver vagrant ci test"
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -85,8 +82,8 @@
 
 
 - job:
-    name: "delete-{name}-vm"
-    description: 'Job responsible for deleting the {name} test VM'
+    name: "delete-gpii-webdriver-vm"
+    description: 'Job responsible for deleting the gpii-webdriver test VM'
     node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
