@@ -7,7 +7,7 @@
     properties:
       # Required by the GitHub PR builder plugin.
       - github:
-      url: "https://github.com/GPII/gpii-webdriver/"
+          url: "https://github.com/GPII/gpii-webdriver/"
     triggers:
       - gh-pr-builder
     scm:
