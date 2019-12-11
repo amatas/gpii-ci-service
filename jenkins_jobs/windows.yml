@@ -2,6 +2,7 @@
     name: windows-tests
     description: 'Main Jenkins job responsible for orchestrating tasks required to run GPII Windows tests'
     project-type: multijob
+    build_timeout: 120
     node: h-0005.tor1.incd.ca
     properties:
       # Required by the GitHub PR builder plugin.
@@ -82,6 +83,9 @@
     publishers:
       - email:
           recipients: ci@lists.gpii.net
+    wrappers:
+      - timeout:
+          timeout: 90
 
 - job:
     name: windows-acceptance-tests
@@ -93,6 +97,9 @@
     publishers:
       - email:
           recipients: ci@lists.gpii.net
+    wrappers:
+      - timeout:
+          timeout: 90
 
 - job:
     name: windows-delete-vm
