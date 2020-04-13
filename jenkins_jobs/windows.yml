@@ -86,6 +86,7 @@
     wrappers:
       - timeout:
           timeout: 90
+          fail: true
 
 - job:
     name: windows-acceptance-tests
@@ -100,6 +101,7 @@
     wrappers:
       - timeout:
           timeout: 90
+          fail: true
 
 - job:
     name: windows-delete-vm
