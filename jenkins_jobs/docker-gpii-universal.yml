@@ -158,9 +158,11 @@
       - shell: |
           TIMESTAMP="$(date -u '+%Y%m%d%H%M%S')"
           GITREV="$(git rev-parse --short HEAD || echo 'no_gitrev')"
+          GITFULLREV="$(git rev-parse HEAD || echo '')"
           # FYI, JJB doesn't like dollar-curly format.
           CALCULATED_TAG="$TIMESTAMP-$GITREV"
           echo "$CALCULATED_TAG" > calculated_tag.env
+          echo "$GITFULLREV" > git_full_rev.env
 
 - job-template:
     defaults: gpii-universal
@@ -170,7 +172,8 @@
     workspace: $parent_workspace
     builders:
       - shell: |
-          docker build --pull -t "{docker_username}/{docker_image}:{docker_tag}" .
+          GITFULLREV="$(cat git_full_rev.env 2>/dev/null || echo '')"
+          docker build --pull --build-arg gitFullRev="$GITFULLREV" -t "{docker_username}/{docker_image}:{docker_tag}" .
           CALCULATED_TAG="$(cat calculated_tag.env 2>/dev/null || echo '')"
           [ -n "$CALCULATED_TAG" ] && docker tag "{docker_username}/{docker_image}:{docker_tag}" "{docker_username}/{docker_image}:$CALCULATED_TAG"
 
