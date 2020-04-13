@@ -2,7 +2,6 @@
     name: windows-tests
     description: 'Main Jenkins job responsible for orchestrating tasks required to run GPII Windows tests'
     project-type: multijob
-    build_timeout: 120
     node: h-0005.tor1.incd.ca
     properties:
       # Required by the GitHub PR builder plugin.
@@ -12,6 +11,12 @@
       - gh-pr-builder
     scm:
       - gh-pr-scm
+    wrappers:
+      - timeout:
+          # Abort after these many minutes
+          timeout: 120
+          # Mark the build as failed
+          fail: true
     builders:
       # Each parent multijob builder passes the Jenkins WORKSPACE environment
       # variable to its child job as a parameter so that a common Git working
