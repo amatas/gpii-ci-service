@@ -2,7 +2,7 @@
     name: windows-tests
     description: 'Main Jenkins job responsible for orchestrating tasks required to run GPII Windows tests'
     project-type: multijob
-    build_timeout: 120
+    build_timeout: 180
     node: h-0005.tor1.incd.ca
     properties:
       # Required by the GitHub PR builder plugin.
@@ -15,7 +15,7 @@
     wrappers:
       - timeout:
           # Abort after these many minutes
-          timeout: 120
+          timeout: 180
           # Mark the build as failed
           fail: true
     builders:
@@ -35,16 +35,28 @@
             - name: windows-code-analysis
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
-          name: windows-unit-tests
+          name: windows-unit-tests-1909
           condition: COMPLETED
           projects:
-            - name: windows-unit-tests
+            - name: windows-unit-tests-1909
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
-          name: windows-acceptance-tests
+          name: windows-acceptance-tests-1909
           condition: COMPLETED
           projects:
-            - name: windows-acceptance-tests
+            - name: windows-acceptance-tests-1909
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: windows-unit-tests-ltsc
+          condition: COMPLETED
+          projects:
+            - name: windows-unit-tests-ltsc
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: windows-acceptance-tests-ltsc
+          condition: COMPLETED
+          projects:
+            - name: windows-acceptance-tests-ltsc
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
           name: windows-delete-vm
@@ -74,18 +86,18 @@
     node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
-      - shell: vagrant winrm -c "do.ps1 -c 'grunt lint'"
+      - shell: vagrant winrm LTSC -c "do.ps1 -c 'grunt lint'"
     publishers:
       - email:
           recipients: ci@lists.gpii.net
 
 - job:
-    name: windows-unit-tests
-    description: 'GPII Windows unit tests'
+    name: windows-unit-tests-ltsc
+    description: 'GPII Windows unit tests in LTSC Windows 10'
     node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
-      - shell: vagrant winrm -c "do.ps1 -c 'npm run test:unit'"
+      - shell: vagrant winrm LTSC -c "do.ps1 -c 'npm run test:unit'"
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -95,12 +107,42 @@
           fail: true
 
 - job:
-    name: windows-acceptance-tests
-    description: 'GPII Windows acceptance tests'
+    name: windows-acceptance-tests-ltsc
+    description: 'GPII Windows acceptance tests in LTSC Windows 10'
     node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
-      - shell: vagrant winrm -c "do.ps1 -c 'npm run test:acceptance'"
+      - shell: vagrant winrm LTSC -c "do.ps1 -c 'npm run test:acceptance'"
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
+    wrappers:
+      - timeout:
+          timeout: 90
+          fail: true
+
+- job:
+    name: windows-unit-tests-1909
+    description: 'GPII Windows unit tests in 1909 version of Windows 10'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: vagrant winrm 1909 -c "do.ps1 -c 'npm run test:unit'"
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
+    wrappers:
+      - timeout:
+          timeout: 90
+          fail: true
+
+- job:
+    name: windows-acceptance-tests-1909
+    description: 'GPII Windows acceptance tests in 1909 version of Windows 10'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: vagrant winrm 1909 -c "do.ps1 -c 'npm run test:acceptance'"
     publishers:
       - email:
           recipients: ci@lists.gpii.net

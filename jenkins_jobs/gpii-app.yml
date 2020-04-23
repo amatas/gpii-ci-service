@@ -14,7 +14,7 @@
     wrappers:
       - timeout:
           # Abort after these many minutes
-          timeout: 120
+          timeout: 180
           # Mark the build as failed
           fail: true
     builders:
@@ -34,10 +34,16 @@
             - name: gpii-app-code-analysis
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
-          name: gpii-app-test
+          name: gpii-app-test-1909
           condition: COMPLETED
           projects:
-            - name: gpii-app-test
+            - name: gpii-app-test-1909
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
+          name: gpii-app-test-ltsc
+          condition: COMPLETED
+          projects:
+            - name: gpii-app-test-ltsc
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
           name: delete-gpii-app-vm
@@ -73,7 +79,7 @@
     node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
-      - shell: vagrant winrm -c "do.ps1 -c 'grunt lint'"
+      - shell: vagrant winrm LTSC -c "do.ps1 -c 'grunt lint'"
     publishers:
       - email:
           recipients: ci@lists.gpii.net
@@ -85,12 +91,29 @@
           fail: true
 
 - job:
-    name: gpii-app-test
-    description: 'GPII-APP tests'
+    name: gpii-app-test-1909
+    description: 'GPII-APP tests in the 1909 version of Windows 10'
     node: h-0005.tor1.incd.ca
     workspace: $parent_workspace
     builders:
-      - shell: vagrant winrm -c "do.ps1 -c 'npm test'"
+      - shell: vagrant winrm 1909 -c "do.ps1 -c 'npm test'"
+    publishers:
+      - email:
+          recipients: ci@lists.gpii.net
+    wrappers:
+      - timeout:
+          # Abort after these many minutes
+          timeout: 60
+          # Mark the build as failed
+          fail: true
+
+- job:
+    name: gpii-app-test-ltsc
+    description: 'GPII-APP tests in LTSC Windows 10'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      - shell: vagrant winrm LTSC -c "do.ps1 -c 'npm test'"
     publishers:
       - email:
           recipients: ci@lists.gpii.net
