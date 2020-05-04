@@ -39,10 +39,6 @@
           projects:
             - name: gpii-app-test-1909
               predefined-parameters: parent_workspace=$WORKSPACE
-      - multijob:
-          name: gpii-app-test-ltsc
-          condition: COMPLETED
-          projects:
             - name: gpii-app-test-ltsc
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:

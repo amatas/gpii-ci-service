@@ -40,22 +40,14 @@
           projects:
             - name: windows-unit-tests-1909
               predefined-parameters: parent_workspace=$WORKSPACE
+            - name: windows-unit-tests-ltsc
+              predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
           name: windows-acceptance-tests-1909
           condition: COMPLETED
           projects:
             - name: windows-acceptance-tests-1909
               predefined-parameters: parent_workspace=$WORKSPACE
-      - multijob:
-          name: windows-unit-tests-ltsc
-          condition: COMPLETED
-          projects:
-            - name: windows-unit-tests-ltsc
-              predefined-parameters: parent_workspace=$WORKSPACE
-      - multijob:
-          name: windows-acceptance-tests-ltsc
-          condition: COMPLETED
-          projects:
             - name: windows-acceptance-tests-ltsc
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
