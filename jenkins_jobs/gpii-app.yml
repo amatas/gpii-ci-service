@@ -28,13 +28,21 @@
             - name: create-gpii-app-vm
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
+          name: provision-gpii-app-vm
+          condition: COMPLETED
+          projects:
+            - name: provision-gpii-app-vm-1909
+              predefined-parameters: parent_workspace=$WORKSPACE
+            - name: provision-gpii-app-vm-LTSC
+              predefined-parameters: parent_workspace=$WORKSPACE
+      - multijob:
           name: gpii-app-code-analysis
           condition: COMPLETED
           projects:
             - name: gpii-app-code-analysis
               predefined-parameters: parent_workspace=$WORKSPACE
       - multijob:
-          name: gpii-app-test-1909
+          name: gpii-app-test
           condition: COMPLETED
           projects:
             - name: gpii-app-test-1909
@@ -61,7 +69,39 @@
     builders:
       # Setting BUILD_ID for vagrant to make sure Jenkins process tree killer doesn't kill the VM
       # before the next job is started
-      - shell: DISPLAY=:0 BUILD_ID=gpii-app vagrant up --provider virtualbox
+      - shell: DISPLAY=:0 BUILD_ID=gpii-app vagrant up --no-provision --provider virtualbox
+    wrappers:
+      - timeout:
+          # Abort after these many minutes
+          timeout: 60
+          # Mark the build as failed
+          fail: true
+
+- job:
+    name: provision-gpii-app-vm-1909
+    description: 'Job responsible for provisioning VM 1909'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      # Setting BUILD_ID for vagrant to make sure Jenkins process tree killer doesn't kill the VM
+      # before the next job is started
+      - shell: DISPLAY=:0 BUILD_ID=gpii-app vagrant provision 1909 --provider virtualbox
+    wrappers:
+      - timeout:
+          # Abort after these many minutes
+          timeout: 60
+          # Mark the build as failed
+          fail: true
+
+- job:
+    name: provision-gpii-app-vm-LTSC
+    description: 'Job responsible for provisioning VM LTSC'
+    node: h-0005.tor1.incd.ca
+    workspace: $parent_workspace
+    builders:
+      # Setting BUILD_ID for vagrant to make sure Jenkins process tree killer doesn't kill the VM
+      # before the next job is started
+      - shell: DISPLAY=:0 BUILD_ID=gpii-app vagrant provision LTSC --provider virtualbox
     wrappers:
       - timeout:
           # Abort after these many minutes
@@ -119,7 +159,6 @@
           timeout: 60
           # Mark the build as failed
           fail: true
-
 
 - job:
     name: delete-gpii-app-vm
